@@ -30,6 +30,12 @@ git status
 git commit -m "info"
 git add 文件名
 git add '*.txt'
+
+git diff
+git diff：是查看working tree与index file的差别的。
+git diff --cached：是查看index file与commit的差别的。
+git diff HEAD：是查看working tree和commit的差别的。（你一定没有忘记，HEAD代表的是最近的一次commit的信息）
+
 git log
 git push -u origin master
 git pull origin master 下载并合并分支
@@ -50,8 +56,14 @@ git merge  合并分支
 git status
 git commit -m "info"
 git add 文件名
-git add '*.txt'
-git log
+git add '*.txt'</p>
+
+<p>git diff
+git diff：是查看working tree与index file的差别的。
+git diff --cached：是查看index file与commit的差别的。
+git diff HEAD：是查看working tree和commit的差别的。（你一定没有忘记，HEAD代表的是最近的一次commit的信息）</p>
+
+<p>git log
 git push -u origin master
 git pull origin master 下载并合并分支
 =git fetch + git merge</p>
