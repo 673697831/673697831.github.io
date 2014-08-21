@@ -27,6 +27,12 @@
 <!-- markdown -->
 1.内存管理/引用计数
 
+使用alloc/new/copy/mutableCopy生成的对象，自己持有,
+要调用release手动释放对象
+
+当不想对该对象持有时,可使用autorelease交给NSAutoreleasePool,
+当想持有不属于自己的对象时,使用retain对该对象进行持有
+
 alloc/retain/release/dealloc/autorelease
 
 GNUstep的引用计数写在对象内存头部
@@ -60,12 +66,17 @@ autorelease并不是立刻释放对象,要等Pool废弃的时候才会release
         多个对象共用一个散列表吗
 
 
-
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
 <p>1.内存管理/引用计数</p>
+
+<p>使用alloc/new/copy/mutableCopy生成的对象，自己持有,
+要调用release手动释放对象</p>
+
+<p>当不想对该对象持有时,可使用autorelease交给NSAutoreleasePool,
+当想持有不属于自己的对象时,使用retain对该对象进行持有</p>
 
 <p>alloc/retain/release/dealloc/autorelease</p>
 
