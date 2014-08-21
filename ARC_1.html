@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+1.内存管理/引用计数
+
+alloc/retain/release/dealloc/autorelease
+
+GNUstep的引用计数写在对象内存头部
+APP的引用计数写在对象对应的散列表
+
+APP对象内存块分配不用考虑引用计数
+
+alloc方法 先分配对象所需空间,再把内存块置为0
+
+retain 把引用计数+1
+release 把引用计数-1,当引用计数为0时,调用dealloc方法
+dealloc 丢弃对象
+autorelease  把对象交给NSAutoreleasePool管理，Pool有自己的
+                     生存周期,其周期结束时候会对其管理对象调用release
+                     方法。
+
+
+很多时候,我们自己生成Pool去对对象进行管理,但当有大量产生autorelease的对象有可能使对象长时间不能得到释放的时候,要在
+适当地方释放或丢弃
+
+autorelease并不是立刻释放对象,要等Pool废弃的时候才会release
+
+
+
+
+
+
+
+问题:散列表是如何与对象对应起来？
+        散列表的内存管理是怎样实现的
+        多个对象共用一个散列表吗
+
+
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>1.内存管理/引用计数</p>
+
+<p>alloc/retain/release/dealloc/autorelease</p>
+
+<p>GNUstep的引用计数写在对象内存头部
+APP的引用计数写在对象对应的散列表</p>
+
+<p>APP对象内存块分配不用考虑引用计数</p>
+
+<p>alloc方法 先分配对象所需空间,再把内存块置为0</p>
+
+<p>retain 把引用计数+1
+release 把引用计数-1,当引用计数为0时,调用dealloc方法
+dealloc 丢弃对象
+autorelease  把对象交给NSAutoreleasePool管理，Pool有自己的
+                     生存周期,其周期结束时候会对其管理对象调用release
+                     方法。</p>
+
+<p>很多时候,我们自己生成Pool去对对象进行管理,但当有大量产生autorelease的对象有可能使对象长时间不能得到释放的时候,要在
+适当地方释放或丢弃</p>
+
+<p>autorelease并不是立刻释放对象,要等Pool废弃的时候才会release</p>
+
+<p>问题:散列表是如何与对象对应起来？
+        散列表的内存管理是怎样实现的
+        多个对象共用一个散列表吗</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "ARC_1.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
