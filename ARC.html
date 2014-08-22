@@ -25,6 +25,20 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
+对象类型修饰符一共有4种
+
+这些修饰符自动变量初始化为nil
+__strong 强引用修饰符 也是对象类型默认修饰符,强引用修饰符持有对象实例,随着强引用的失效, 引用的对象会随之释放
+
+__weak 弱引用修饰符 不持有对象实例, 弱引用的对象被废弃,则此引用将自动失效且处于nil状态
+
+__unsafe_unretained 不安全修饰符,该修饰符的变量不属于编译器的内存管理对象
+
+__autoreleasing修饰符 在ARC有效时候用@autoreleasepool块替代NSAutoreleasePool类, 用附有__autoreleasing修饰符的变量替代autorelease方法(为了自动注册到Pool)
+id __weak obj1 = obj0;
+id __autoreleasing tmp = obj1;
+(确保@autoreleasepool块结束之前确保该对象存在)
+
 所谓内存泄露就是应当废弃的对象在超出其生存周期后继续存在
 
 ARC有效时, 不能使用retain/release/retainCount/autorelease
@@ -60,6 +74,20 @@ __bridge_transfer   与release相似
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<p>对象类型修饰符一共有4种</p>
+
+<p>这些修饰符自动变量初始化为nil
+__strong 强引用修饰符 也是对象类型默认修饰符,强引用修饰符持有对象实例,随着强引用的失效, 引用的对象会随之释放</p>
+
+<p>__weak 弱引用修饰符 不持有对象实例, 弱引用的对象被废弃,则此引用将自动失效且处于nil状态</p>
+
+<p><em>_unsafe</em>unretained 不安全修饰符,该修饰符的变量不属于编译器的内存管理对象</p>
+
+<p><strong>autoreleasing修饰符 在ARC有效时候用@autoreleasepool块替代NSAutoreleasePool类, 用附有</strong>autoreleasing修饰符的变量替代autorelease方法(为了自动注册到Pool)
+id <em>_weak obj1 = obj0;
+id _</em>autoreleasing tmp = obj1;
+(确保@autoreleasepool块结束之前确保该对象存在)</p>
+
 <p>所谓内存泄露就是应当废弃的对象在超出其生存周期后继续存在</p>
 
 <p>ARC有效时, 不能使用retain/release/retainCount/autorelease
