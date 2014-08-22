@@ -28,36 +28,37 @@
 对象类型修饰符一共有4种
 
 这些修饰符自动变量初始化为nil
-__strong 强引用修饰符 也是对象类型默认修饰符,强引用修饰符持有对象实例,随着强引用的失效, 引用的对象会随之释放
+1.__strong 强引用修饰符 也是对象类型默认修饰符,强引用修饰符持有对象实例,随着强引用的失效, 引用的对象会随之释放
 
-__weak 弱引用修饰符 不持有对象实例, 弱引用的对象被废弃,则此引用将自动失效且处于nil状态
+2.__weak 弱引用修饰符 不持有对象实例, 弱引用的对象被废弃,则此引用将自动失效且处于nil状态
 
-__unsafe_unretained 不安全修饰符,该修饰符的变量不属于编译器的内存管理对象
+3.__unsafe_unretained 不安全修饰符,该修饰符的变量不属于编译器的内存管理对象
 
-__autoreleasing修饰符 在ARC有效时候用@autoreleasepool块替代NSAutoreleasePool类, 用附有__autoreleasing修饰符的变量替代autorelease方法(为了自动注册到Pool)
+4.__autoreleasing修饰符 在ARC有效时候用@autoreleasepool块替代NSAutoreleasePool类, 用附有__autoreleasing修饰符的变量替代autorelease方法(为了自动注册到Pool)
 id __weak obj1 = obj0;
 id __autoreleasing tmp = obj1;
 (确保@autoreleasepool块结束之前确保该对象存在)
 
 所谓内存泄露就是应当废弃的对象在超出其生存周期后继续存在
 
-ARC有效时, 不能使用retain/release/retainCount/autorelease
+ARC规则:
+1.ARC有效时, 不能使用retain/release/retainCount/autorelease
 不能使用NSAllocateObject/NSDeallocateObject
 
-命名规则：以init开始的方法必须是实例方法并且必须返回对象
+2.命名规则：以init开始的方法必须是实例方法并且必须返回对象
 
-无论ARC是否有效, 不要显式调用dealloc
+3.无论ARC是否有效, 不要显式调用dealloc
 
-使用@autoreleasepool块替代NSAutoreleasePool
+4.使用@autoreleasepool块替代NSAutoreleasePool
 
-不能使用区域(NSZone)
+5.不能使用区域(NSZone)
 
-对象型变量不能作为C语言结构体的成员
+6.对象型变量不能作为C语言结构体的成员
 struct Data{
      NSMutableArray __unsafe_unretained *array;
 };
 
-id和void *的显式转换
+7.id和void *的显式转换
 
 悬垂指针:
 指向曾经存在的对象，但该对象已经不再存在了，此类指针称为悬垂指针。结果未定义，往往导致程序错误，而且难以检测
@@ -70,6 +71,9 @@ __bridge_retained  与retain相似
 __bridge_transfer   与release相似
 
 
+分配内存推荐用calloc这样的函数分配,分配后置为nil
+calloc = malloc  + memset
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -77,36 +81,37 @@ __bridge_transfer   与release相似
 <p>对象类型修饰符一共有4种</p>
 
 <p>这些修饰符自动变量初始化为nil
-__strong 强引用修饰符 也是对象类型默认修饰符,强引用修饰符持有对象实例,随着强引用的失效, 引用的对象会随之释放</p>
+1.__strong 强引用修饰符 也是对象类型默认修饰符,强引用修饰符持有对象实例,随着强引用的失效, 引用的对象会随之释放</p>
 
-<p>__weak 弱引用修饰符 不持有对象实例, 弱引用的对象被废弃,则此引用将自动失效且处于nil状态</p>
+<p>2.__weak 弱引用修饰符 不持有对象实例, 弱引用的对象被废弃,则此引用将自动失效且处于nil状态</p>
 
-<p><em>_unsafe</em>unretained 不安全修饰符,该修饰符的变量不属于编译器的内存管理对象</p>
+<p>3.<em>_unsafe</em>unretained 不安全修饰符,该修饰符的变量不属于编译器的内存管理对象</p>
 
-<p><strong>autoreleasing修饰符 在ARC有效时候用@autoreleasepool块替代NSAutoreleasePool类, 用附有</strong>autoreleasing修饰符的变量替代autorelease方法(为了自动注册到Pool)
+<p>4.<strong>autoreleasing修饰符 在ARC有效时候用@autoreleasepool块替代NSAutoreleasePool类, 用附有</strong>autoreleasing修饰符的变量替代autorelease方法(为了自动注册到Pool)
 id <em>_weak obj1 = obj0;
 id _</em>autoreleasing tmp = obj1;
 (确保@autoreleasepool块结束之前确保该对象存在)</p>
 
 <p>所谓内存泄露就是应当废弃的对象在超出其生存周期后继续存在</p>
 
-<p>ARC有效时, 不能使用retain/release/retainCount/autorelease
+<p>ARC规则:
+1.ARC有效时, 不能使用retain/release/retainCount/autorelease
 不能使用NSAllocateObject/NSDeallocateObject</p>
 
-<p>命名规则：以init开始的方法必须是实例方法并且必须返回对象</p>
+<p>2.命名规则：以init开始的方法必须是实例方法并且必须返回对象</p>
 
-<p>无论ARC是否有效, 不要显式调用dealloc</p>
+<p>3.无论ARC是否有效, 不要显式调用dealloc</p>
 
-<p>使用@autoreleasepool块替代NSAutoreleasePool</p>
+<p>4.使用@autoreleasepool块替代NSAutoreleasePool</p>
 
-<p>不能使用区域(NSZone)</p>
+<p>5.不能使用区域(NSZone)</p>
 
-<p>对象型变量不能作为C语言结构体的成员
+<p>6.对象型变量不能作为C语言结构体的成员
 struct Data{
      NSMutableArray <em>_unsafe</em>unretained *array;
 };</p>
 
-<p>id和void *的显式转换</p>
+<p>7.id和void *的显式转换</p>
 
 <p>悬垂指针:
 指向曾经存在的对象，但该对象已经不再存在了，此类指针称为悬垂指针。结果未定义，往往导致程序错误，而且难以检测</p>
@@ -117,6 +122,9 @@ id o = (__bridge id)p;</p>
 
 <p><em>_bridge</em>retained  与retain相似
 <em>_bridge</em>transfer   与release相似</p>
+
+<p>分配内存推荐用calloc这样的函数分配,分配后置为nil
+calloc = malloc  + memset</p>
 <!-- content end -->
 </div>
 <br>
