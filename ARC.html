@@ -34,6 +34,19 @@ ARC有效时, 不能使用retain/release/retainCount/autorelease
 
 无论ARC是否有效, 不要显式调用dealloc
 
+使用@autoreleasepool块替代NSAutoreleasePool
+
+不能使用区域(NSZone)
+
+对象型变量不能作为C语言结构体的成员
+struct Data{
+     NSMutableArray __unsafe_unretained *array;
+};
+
+id和void *的显式转换
+
+悬垂指针:
+指向曾经存在的对象，但该对象已经不再存在了，此类指针称为悬垂指针。结果未定义，往往导致程序错误，而且难以检测
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -46,6 +59,20 @@ ARC有效时, 不能使用retain/release/retainCount/autorelease
 <p>命名规则：以init开始的方法必须是实例方法并且必须返回对象</p>
 
 <p>无论ARC是否有效, 不要显式调用dealloc</p>
+
+<p>使用@autoreleasepool块替代NSAutoreleasePool</p>
+
+<p>不能使用区域(NSZone)</p>
+
+<p>对象型变量不能作为C语言结构体的成员
+struct Data{
+     NSMutableArray <em>_unsafe</em>unretained *array;
+};</p>
+
+<p>id和void *的显式转换</p>
+
+<p>悬垂指针:
+指向曾经存在的对象，但该对象已经不再存在了，此类指针称为悬垂指针。结果未定义，往往导致程序错误，而且难以检测</p>
 <!-- content end -->
 </div>
 <br>
