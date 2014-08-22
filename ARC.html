@@ -27,11 +27,21 @@
 <!-- markdown -->
 所谓内存泄露就是应当废弃的对象在超出其生存周期后继续存在
 
+ARC有效时, 不能使用retain/release/retainCount/autorelease
+不能使用NSAllocateObject/NSDeallocateObject
+
+命名规则：以init开始的方法必须是实例方法并且必须返回对象
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
 <p>所谓内存泄露就是应当废弃的对象在超出其生存周期后继续存在</p>
+
+<p>ARC有效时, 不能使用retain/release/retainCount/autorelease
+不能使用NSAllocateObject/NSDeallocateObject</p>
+
+<p>命名规则：以init开始的方法必须是实例方法并且必须返回对象</p>
 <!-- content end -->
 </div>
 <br>
