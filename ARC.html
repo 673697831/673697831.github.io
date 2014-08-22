@@ -47,6 +47,15 @@ id和void *的显式转换
 
 悬垂指针:
 指向曾经存在的对象，但该对象已经不再存在了，此类指针称为悬垂指针。结果未定义，往往导致程序错误，而且难以检测
+
+可以通过__bridge把id和void*相互转换(不安全)
+void *p = (__bridge void *)obj;
+id o = (__bridge id)p;
+
+__bridge_retained  与retain相似
+__bridge_transfer   与release相似
+
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -73,6 +82,13 @@ struct Data{
 
 <p>悬垂指针:
 指向曾经存在的对象，但该对象已经不再存在了，此类指针称为悬垂指针。结果未定义，往往导致程序错误，而且难以检测</p>
+
+<p>可以通过<strong>bridge把id和void*相互转换(不安全)
+void *p = (</strong>bridge void *)obj;
+id o = (__bridge id)p;</p>
+
+<p><em>_bridge</em>retained  与retain相似
+<em>_bridge</em>transfer   与release相似</p>
 <!-- content end -->
 </div>
 <br>
