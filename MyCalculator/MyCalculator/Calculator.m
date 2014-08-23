@@ -63,27 +63,7 @@
 
 // 命令操作
 -(void) inputACommand:(NSInteger) cmd {
-    /*
-    [self debugInfo:[NSString stringWithFormat:@"current commend is %ld", cmd]];
-    switch (cmd) {
-        case 1: // press CE reset
-            [self reset];
-            break;
-        case 2: // press MC for Clear MEM Cache
-            //[self display:@"测试清除内存"];
-            [self clearCache];
-            break;
-        case 3: // press M+ for Save current Num to MEM Cache
-            //[self display:@"测试内存保存"];
-            [self saveCache];
-            break;
-        case 4: // press MR for Read MEM Cache to current Number
-            [self readCache];
-            break;
-        default: // other none support
-            break;
-    }
-     */
+    [self reset];
 }
 -(void) inputANumber:(NSInteger) number {
     //[label_result setText:[NSString stringWithFormat:@"%d", number]];
@@ -137,6 +117,7 @@
             _result = [self getResult:op1 :op2 :lastOp];
             result = _result;
         }*/
+        NSLog(@"%f,%f,%ld",op1,op2,(long)lastOp);
         _result = [self getResult:op1 :op2 :lastOp];
         result = _result;
         opi = 0;
@@ -164,7 +145,13 @@
             result = _result;
         }
          */
-        _result = [self getResult:op1 :op2 :lastOp];
+        if (lastOp==-1){
+            _result = [opc doubleValue];
+        }else
+        {
+            _result = [self getResult:op1 :op2 :lastOp];
+        }
+        
         //_result = [opc doubleValue];
         result = _result;
         opi = 1;
@@ -179,7 +166,6 @@
     
     if ( isError == 0 ) {
         //[self displayResult: [NSString stringWithFormat:@"%g",_result]];
-        NSLog(@"%g", _result);
         [label_result setText:[NSString stringWithFormat:@"%g", _result]];
     } else {
         //[self displayError:isError];
@@ -194,7 +180,6 @@
 // 获得运算结果
 -(double) getResult:(double)number1 :(double)number2 :(NSInteger)operation {
     double _result = 0;
-    NSLog(@"%d",lastOp);
     switch ( lastOp ) {
         case EQUAL:
             _result = number1;
@@ -311,6 +296,12 @@
     [self.view addSubview:btn_div];
     // Do any additional setup after loading the view.
     
+    UIButton *btn_clear = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn_clear.frame = CGRectMake(min_x, 400 - 40 *3, width, height);
+    btn_clear.backgroundColor = [UIColor orangeColor];
+    [btn_clear setTitle:[NSString stringWithFormat:@"C"] forState:UIControlStateNormal];
+    [btn_clear addTarget:self action:@selector(inputCommand:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn_clear];
 }
 
 - (void)didReceiveMemoryWarning
