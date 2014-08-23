@@ -302,6 +302,8 @@
     [btn_clear setTitle:[NSString stringWithFormat:@"C"] forState:UIControlStateNormal];
     [btn_clear addTarget:self action:@selector(inputCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn_clear];
+    
+    [self reset];
 }
 
 - (void)didReceiveMemoryWarning
