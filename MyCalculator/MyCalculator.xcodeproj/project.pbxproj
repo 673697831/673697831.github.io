@@ -19,6 +19,7 @@
 		205BE54119A8863100FA5B35 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205BE52919A8863100FA5B35 /* UIKit.framework */; };
 		205BE54919A8863100FA5B35 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205BE54719A8863100FA5B35 /* InfoPlist.strings */; };
 		205BE54B19A8863100FA5B35 /* MyCalculatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 205BE54A19A8863100FA5B35 /* MyCalculatorTests.m */; };
+		20D0F5A319A888CF00748A3D /* Calculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D0F5A219A888CF00748A3D /* Calculator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,8 @@
 		205BE54619A8863100FA5B35 /* MyCalculatorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MyCalculatorTests-Info.plist"; sourceTree = "<group>"; };
 		205BE54819A8863100FA5B35 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		205BE54A19A8863100FA5B35 /* MyCalculatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyCalculatorTests.m; sourceTree = "<group>"; };
+		20D0F5A119A888CF00748A3D /* Calculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calculator.h; sourceTree = "<group>"; };
+		20D0F5A219A888CF00748A3D /* Calculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calculator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +112,8 @@
 			children = (
 				205BE53419A8863100FA5B35 /* AppDelegate.h */,
 				205BE53519A8863100FA5B35 /* AppDelegate.m */,
+				20D0F5A119A888CF00748A3D /* Calculator.h */,
+				20D0F5A219A888CF00748A3D /* Calculator.m */,
 				205BE53719A8863100FA5B35 /* Images.xcassets */,
 				205BE52C19A8863100FA5B35 /* Supporting Files */,
 			);
@@ -239,6 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20D0F5A319A888CF00748A3D /* Calculator.m in Sources */,
 				205BE53619A8863100FA5B35 /* AppDelegate.m in Sources */,
 				205BE53219A8863100FA5B35 /* main.m in Sources */,
 			);
@@ -439,6 +445,7 @@
 				205BE55019A8863100FA5B35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		205BE55119A8863100FA5B35 /* Build configuration list for PBXNativeTarget "MyCalculatorTests" */ = {
 			isa = XCConfigurationList;
@@ -447,6 +454,7 @@
 				205BE55319A8863100FA5B35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

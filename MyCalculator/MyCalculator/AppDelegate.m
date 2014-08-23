@@ -16,6 +16,12 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    self->calculator = [[Calculator alloc] init];
+    UINavigationController* nav = [[UINavigationController alloc] initWithRootViewController:calculator];
+    self.window.rootViewController=nav;
+    //self.window.backgroundColor = [UIColor orangeColor];
+    nav.navigationBar.hidden = YES;
+    [nav setHidesBottomBarWhenPushed:YES];
     return YES;
 }
 
