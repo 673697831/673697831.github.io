@@ -11,6 +11,7 @@
 @interface Calculator : UIViewController
 {
     IBOutlet UILabel *label_result;
+    IBOutlet UILabel *label_op;
     IBOutlet UIButton *button0;
     IBOutlet UIButton *button1;
     NSMutableDictionary *dic;
@@ -33,7 +34,7 @@
 @property(nonatomic,retain)IBOutlet UIButton *button1;
 @property(nonatomic,retain)IBOutlet UIButton *button0;
 @property(nonatomic,retain)IBOutlet UILabel *label_result;
-
+@property(nonatomic,retain)IBOutlet UILabel *label_op;
 
 // 重置状态
 -(void) reset;

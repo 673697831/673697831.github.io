@@ -20,6 +20,7 @@
 @implementation Calculator
 @synthesize button1;
 @synthesize label_result;
+@synthesize label_op;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -43,7 +44,7 @@
     hasPoint = NO;   // 是否输入了小数点
     lastOp = -1;    // 初始时为-1
     isError = 0;
-    
+    [label_op setText:[NSString stringWithFormat:@""]];
     [label_result setText:[NSString stringWithFormat:@"%d", 0]];
 }
 
@@ -109,6 +110,28 @@
 }
 // 输入操作符
 -(void) inputAOperator:(NSInteger) opt{
+    switch (opt) {
+        case EQUAL:
+            [label_op setText:[NSString stringWithFormat:@"="]];
+            break;
+        case PLUS:
+            [label_op setText:[NSString stringWithFormat:@"+"]];
+            break;
+        case MINUS:
+            [label_op setText:[NSString stringWithFormat:@"-"]];
+            break;
+        case DIV:
+            [label_op setText:[NSString stringWithFormat:@"/"]];
+            break;
+        case MUL:
+            [label_op setText:[NSString stringWithFormat:@"×"]];
+            break;
+        default:
+            [label_op setText:[NSString stringWithFormat:@""]];
+            break;
+    }
+    
+    
     double _result = 0;
     
     if ( opt==-2 ) {
@@ -251,6 +274,12 @@
     label_result.textColor = [UIColor blackColor];
     label_result.textAlignment = UITextAlignmentRight;
     [self.view addSubview:label_result];
+    f_result = CGRectMake(min_x, 138, 280, 38);
+    label_op = [[UILabel alloc] initWithFrame:f_result];
+    label_op.backgroundColor = [UIColor cyanColor];
+    label_op.textColor = [UIColor blackColor];
+    
+    [self.view addSubview:label_op];
     
     UIButton *button_0 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     button_0.frame = CGRectMake(min_x, 440, width * 2 + 2, height);
