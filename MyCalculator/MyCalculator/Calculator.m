@@ -109,13 +109,6 @@
 -(void) inputAOperator:(NSInteger) opt{
     double _result = 0;
     
-    if (opt !=EQUAL && lastOp !=EQUAL)
-    {
-        //lastInput = opt;
-        //lastOp = opt;
-        //return;
-    }
-    
     if ( opt==-2 ) {
         if ( lastOp == -1 ){
             if ( [opc doubleValue]!=0.0 ) {
@@ -140,7 +133,13 @@
             _result = [opc doubleValue];
         }else
         {
-            _result = [self getResult:op1 :op2 :opt];
+            if (lastOp != EQUAL && opt != EQUAL)
+            {
+                _result = op1;
+            }else
+            {
+                _result = [self getResult:op1 :op2 :opt];
+            }
         }
         
         //_result = [opc doubleValue];
