@@ -35,9 +35,11 @@
     op1 = 0.0;
     op2 = 0.0;
     result = 0.0;
-    
+    second_num = 0;
+    did_second = false;
     opi = 0;
-    //lastInput = 0;  // 上一个键入的内容类型
+    lastInput = -1;  // 上一个键入的内容类型0代表数字,1代表操作符
+    lastSign = -1;
     hasPoint = NO;   // 是否输入了小数点
     lastOp = -1;    // 初始时为-1
     isError = 0;
@@ -67,9 +69,8 @@
 }
 -(void) inputANumber:(NSInteger) number {
     //[label_result setText:[NSString stringWithFormat:@"%d", number]];
-
     if ( [opc length]>=4 ) {
-        return;
+        //return;
     }
     if ( number==99 ) {
         // 输入小数点
@@ -86,9 +87,9 @@
             opc = [NSString stringWithFormat:@"%@%d", opc, number];
         } else {
             if ( [opc intValue]==0 ) {
-                if ( number>0 ) {
+                //if ( number>0 ) {
                     opc = [NSString stringWithFormat:@"%d", number];
-                }
+                //}
             } else {
                 opc = [NSString stringWithFormat:@"%@%d", opc, number];
             }
@@ -96,60 +97,50 @@
     }
     if ( opi == 0 ) {
         op1 = [opc doubleValue];
+        did_second = false;
     } else {
         op2 = [opc doubleValue];
+        did_second = true;
+        second_num = op2;
     }
     [label_result setText:[NSString stringWithFormat:@"%@", opc]];
 }
 // 输入操作符
 -(void) inputAOperator:(NSInteger) opt{
     double _result = 0;
+    
+    if (opt !=EQUAL && lastOp !=EQUAL)
+    {
+        //lastInput = opt;
+        //lastOp = opt;
+        //return;
+    }
+    
     if ( opt==-2 ) {
-        // equl
-        /*
-        if ( lastOp<0 ) {
+        if ( lastOp == -1 ){
             if ( [opc doubleValue]!=0.0 ) {
                 result = [opc doubleValue];
                 opc = @"";
             }
             _result = result;
-        } else {
-            _result = [self getResult:op1 :op2 :lastOp];
+        }else
+        {
+            NSLog(@"%f,%f,%ld",op1,op2,(long)lastOp);
+            _result = [self getResult:op1 :op2 :opt];
             result = _result;
-        }*/
-        NSLog(@"%f,%f,%ld",op1,op2,(long)lastOp);
-        _result = [self getResult:op1 :op2 :lastOp];
-        result = _result;
+        }
+        
+        lastNumber = &result;
         opi = 0;
         op1 = result;
         op2 = 0;
         opc = @"";
     } else if ( opt<0 ) {
-        // plus sub muilt div
-        /*
-        if ( lastOp==-1 ) {
-            _result = [opc doubleValue];
-            result = _result;
-        } else if ( lastOp==0 ) {
-            if ( [opc doubleValue]!=0.0 ) {
-                result = [opc doubleValue];
-                opc = @"";
-            }
-            _result = result;
-        } else {
-            if ( lastOp==4 && opt==4 && [opc length]==0 ) {
-                op2 = 1;
-                //[self debugInfo:[NSString stringWithFormat:@"连续点击除法操作！\n",opc]];
-            }
-            _result = [self getResult:op1 :op2 :lastOp];
-            result = _result;
-        }
-         */
         if (lastOp==-1){
             _result = [opc doubleValue];
         }else
         {
-            _result = [self getResult:op1 :op2 :lastOp];
+            _result = [self getResult:op1 :op2 :opt];
         }
         
         //_result = [opc doubleValue];
@@ -158,6 +149,8 @@
         op1 = result;
         opc = @"";
         op2 = 0;
+        lastSign = opt;
+        //did_second = false;
     } else {
         // functional addition
     }
@@ -166,11 +159,14 @@
     
     if ( isError == 0 ) {
         //[self displayResult: [NSString stringWithFormat:@"%g",_result]];
-        [label_result setText:[NSString stringWithFormat:@"%g", _result]];
+        [label_result setText:[NSString stringWithFormat:@"%.20g", _result]];
     } else {
         //[self displayError:isError];
+        [label_result setText:[NSString stringWithFormat:@"除数不能为0！"]];
         isError = 0;
     }
+    lastInput = opt;
+    
     //[self debugInfo:@"操作完成\n"];
     
 }
@@ -180,29 +176,61 @@
 // 获得运算结果
 -(double) getResult:(double)number1 :(double)number2 :(NSInteger)operation {
     double _result = 0;
-    switch ( lastOp ) {
-        case EQUAL:
-            _result = number1;
-            break;
-        case PLUS:
-            _result = number1 + number2;
-            break;
-        case MINUS:
-            _result = number1 - number2;
-            break;
-        case MUL:
-            _result = number1 * number2;
-            break;
-        case DIV:
-            if ( number2 != 0 ) {
-                _result = number1 / number2;
-            } else {
-                // ErrorID == 1 for Cant div 0
-                isError = 1;
-            }
-            break;
-        default:
-            break;
+    
+    
+    
+    if (!did_second)
+    {
+        number2 = number1;
+        did_second = true;
+        second_num = number2;
+    }
+    else
+    {
+        number2 = second_num;
+    }
+        switch ( lastOp ) {
+            case EQUAL:
+                //_result = [self getResult:number1 :number2 :operation];
+                // lastOp = -1;
+                if (operation == EQUAL)
+                {
+                    //_result = [self getResult:number1 :number2:lastOp];
+                    if (lastSign != -1)
+                    {
+                        lastOp = lastSign;
+                        _result = [self getResult:number1 :number2:lastOp];
+                    }else
+                    {
+                    
+                    }
+                }
+                else{
+                    _result = number1;
+                }
+                break;
+            case PLUS:
+                _result = number1 + number2;
+                break;
+            case MINUS:
+                _result = number1 - number2;
+                break;
+            case MUL:
+                _result = number1 * number2;
+                break;
+            case DIV:
+                if ( number2 != 0 ) {
+                    _result = number1 / number2;
+                } else {
+                    // ErrorID == 1 for Cant div 0
+                    isError = 1;
+                }
+                break;
+            case -1:
+                _result = number1;
+                break;
+            default:
+                break;
     }
     return _result;
 }

@@ -19,10 +19,12 @@
     double op2; // 存储操作数 2
     double cache;   // 缓存
     double result;  // 上一次计算的结果缓存
-    
+    double second_num; //缓存第二操作数
+    bool did_second;
     NSString * opc; // 当前操作数
-    
+    double * lastNumber;
     NSInteger lastOp;   // 上一次操作
+    NSInteger lastSign; // 上一次四则运算
     NSInteger isError;  // 是否存在错误
     int opi;        // 当前操作数序号
     bool hasPoint;   // 是否输入了小数点
