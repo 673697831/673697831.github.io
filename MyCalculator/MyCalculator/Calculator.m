@@ -103,6 +103,7 @@
         did_second = true;
         second_num = op2;
     }
+    lastInput = number;
     [label_result setText:[NSString stringWithFormat:@"%@", opc]];
 }
 // 输入操作符
@@ -133,7 +134,7 @@
             _result = [opc doubleValue];
         }else
         {
-            if (lastOp != EQUAL && opt != EQUAL)
+            if (lastOp != EQUAL && opt != EQUAL && lastInput < -1)
             {
                 _result = op1;
             }else
