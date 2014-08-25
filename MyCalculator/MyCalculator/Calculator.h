@@ -13,7 +13,7 @@
     IBOutlet UILabel *label_result;
     IBOutlet UIButton *button0;
     IBOutlet UIButton *button1;
-    NSMutableArray *numberArray;
+    NSMutableDictionary *dic;
     
     double op1; // 存储操作数 1
     double op2; // 存储操作数 2

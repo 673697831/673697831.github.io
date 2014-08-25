@@ -56,6 +56,7 @@
 }
 // Press a Operator Button {=|+|-|*|/}
 -(IBAction) inputOperator:(id) sender{
+    [self updateButtonStatus:sender];
     [self inputAOperator: [sender tag]];
 }
 // Press a Functional Button
@@ -69,8 +70,8 @@
 }
 -(void) inputANumber:(NSInteger) number {
     //[label_result setText:[NSString stringWithFormat:@"%d", number]];
-    if ( [opc length]>=4 ) {
-        //return;
+    if ( [opc length]>=20 ) {
+        return;
     }
     if ( number==99 ) {
         // 输入小数点
@@ -159,7 +160,7 @@
     
     if ( isError == 0 ) {
         //[self displayResult: [NSString stringWithFormat:@"%g",_result]];
-        [label_result setText:[NSString stringWithFormat:@"%.20g", _result]];
+        [label_result setText:[NSString stringWithFormat:@"%.10g", _result]];
     } else {
         //[self displayError:isError];
         [label_result setText:[NSString stringWithFormat:@"除数不能为0！"]];
@@ -296,24 +297,26 @@
     btn_plus.backgroundColor = [UIColor orangeColor];
     [btn_plus setTitle:[NSString stringWithFormat:@"+"] forState:UIControlStateNormal];
     [btn_plus setTag:-3];
+    
+    
     [btn_plus addTarget:self action:@selector(inputOperator:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn_plus];
     
-    UIButton *btn_mi = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn_mi.frame = CGRectMake(min_x + 3 * 70, 400 - 40 *2, width, height);
-    btn_mi.backgroundColor = [UIColor orangeColor];
-    [btn_mi setTitle:[NSString stringWithFormat:@"-"] forState:UIControlStateNormal];
-    [btn_mi setTag:-4];
-    [btn_mi addTarget:self action:@selector(inputOperator:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn_mi];
+    UIButton *btn_sub = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn_sub.frame = CGRectMake(min_x + 3 * 70, 400 - 40 *2, width, height);
+    btn_sub.backgroundColor = [UIColor orangeColor];
+    [btn_sub setTitle:[NSString stringWithFormat:@"-"] forState:UIControlStateNormal];
+    [btn_sub setTag:-4];
+    [btn_sub addTarget:self action:@selector(inputOperator:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn_sub];
     
-    UIButton *btn_times = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btn_times.frame = CGRectMake(min_x + 3 * 70, 400 - 40 *3, width, height);
-    btn_times.backgroundColor = [UIColor orangeColor];
-    [btn_times setTitle:[NSString stringWithFormat:@"×"] forState:UIControlStateNormal];
-    [btn_times setTag:-5];
-    [btn_times addTarget:self action:@selector(inputOperator:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btn_times];
+    UIButton *btn_mul = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btn_mul.frame = CGRectMake(min_x + 3 * 70, 400 - 40 *3, width, height);
+    btn_mul.backgroundColor = [UIColor orangeColor];
+    [btn_mul setTitle:[NSString stringWithFormat:@"×"] forState:UIControlStateNormal];
+    [btn_mul setTag:-5];
+    [btn_mul addTarget:self action:@selector(inputOperator:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:btn_mul];
     
     UIButton *btn_div = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     btn_div.frame = CGRectMake(min_x + 2 * 70, 400 - 40 *3, width, height);
@@ -331,7 +334,35 @@
     [btn_clear addTarget:self action:@selector(inputCommand:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:btn_clear];
     
+    dic = [NSMutableDictionary dictionary];
+    [dic setObject:btn_plus forKey:@"+"];
+    [dic setObject:btn_sub forKey:@"-"];
+    [dic setObject:btn_mul forKey:@"*"];
+    [dic setObject:btn_div forKey:@"/"];
+    
+    for (id key in dic) {
+        UIButton *button = [dic objectForKey:key];
+        CALayer *layer = button.layer;
+        layer.borderWidth = 2;  // 给图层添加一个有色边框
+        layer.borderColor = [UIColor orangeColor].CGColor;
+    }
     [self reset];
+}
+
+- (void)updateButtonStatus:(id) sender
+{
+    for (id key in dic) {
+        id object = [dic objectForKey:key];
+        UIButton *b = object;
+        CALayer *layer = b.layer;
+        if (object == sender)
+        {
+            layer.borderColor = [UIColor blackColor].CGColor;
+        }else
+        {
+            layer.borderColor = [UIColor orangeColor].CGColor;
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning
