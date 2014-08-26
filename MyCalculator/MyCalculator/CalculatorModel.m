@@ -99,7 +99,7 @@
             }
         }
     }
-    if ( lastOp == EQUAL | lastOp == -1) {
+    if ( lastOp == EQUAL || lastOp == -1) {
         op1 = [opc doubleValue];
         //did_second = false;
     } else {
