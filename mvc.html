@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+        MVC全名是Model View Controller，是模型(model)－视图(view)－控制器(controller)的缩写
+       我的理解是,利用这样的架构,可以让程序设计变得更加轻松, 更加方便。在团队合作的时候,利用这种设计框架我们可以把视图模型和控制器分开独立去做。缩短开发时间。利用这种框架可以还可以使代码重复使用。
+       model层是应用程序中用于处理应用程序数据逻辑的部分。通常模型对象负责在数据库中存取数据。在前端经常用到这种技术,大多是取出缓存中的数据以及对象属性。把这一层的数据对立出来,应用在不同的UI及其他逻辑中。也可以实现不同model之间的数据交换。
+       view层主要是用来表现。视图不仅仅单纯的图片控件什么的,还包含其他元素以及特效例子什么的。一般的视图都使用模板,通用的控件。这样可以重复利用写好的视图逻辑,在设计和改变设计的时候都会带来很大的方便。
+       controller主要是连接M和V的工具。是应用程序中处理用户交互的部分。通常控制器负责从视图读取数据，控制用户输入，并向模型发送数据。前后端通讯中用到的协议传输,一般都会用到这种技术。在前端,协议的上行代表数据的请求,或者用户的输入。而协议的下行代表数据的返回, 表示对用户的回应。一般把control作为每个模块的标志,区分每个模块,对其他模块提供开放接口,实现模块间的通讯。
+       以上便是我对MVC三层架构的理解。
+
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<pre><code>    MVC全名是Model View Controller，是模型(model)－视图(view)－控制器(controller)的缩写
+   我的理解是,利用这样的架构,可以让程序设计变得更加轻松, 更加方便。在团队合作的时候,利用这种设计框架我们可以把视图模型和控制器分开独立去做。缩短开发时间。利用这种框架可以还可以使代码重复使用。
+   model层是应用程序中用于处理应用程序数据逻辑的部分。通常模型对象负责在数据库中存取数据。在前端经常用到这种技术,大多是取出缓存中的数据以及对象属性。把这一层的数据对立出来,应用在不同的UI及其他逻辑中。也可以实现不同model之间的数据交换。
+   view层主要是用来表现。视图不仅仅单纯的图片控件什么的,还包含其他元素以及特效例子什么的。一般的视图都使用模板,通用的控件。这样可以重复利用写好的视图逻辑,在设计和改变设计的时候都会带来很大的方便。
+   controller主要是连接M和V的工具。是应用程序中处理用户交互的部分。通常控制器负责从视图读取数据，控制用户输入，并向模型发送数据。前后端通讯中用到的协议传输,一般都会用到这种技术。在前端,协议的上行代表数据的请求,或者用户的输入。而协议的下行代表数据的返回, 表示对用户的回应。一般把control作为每个模块的标志,区分每个模块,对其他模块提供开放接口,实现模块间的通讯。
+   以上便是我对MVC三层架构的理解。
+</code></pre>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "mvc.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
