@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+#import <QuartzCore/QuartzCore.h>  // 添加系统框架  
+  
+   
+layer.backgroundColor = [UIColor cyanColor].CGColor; // 给图层添加背景色  
+layer.contents = (id)[UIImage imageNamed:@"view_BG.png"].CGImage; // 给图层添加背景图片  
+layer.cornerRadius = 8;  // 将图层的边框设置为圆脚  
+layer.masksToBounds = YES; // 隐藏边界  
+layer.borderWidth = 5;  // 给图层添加一个有色边框   
+layer.borderColor = [UIColor colorWithRed:0.52 green:0.09 blue:0.07 alpha:1].CGColor;   
+layer.shadowOffset = CGSizeMake(0, 3);  // 设置阴影的偏移量  
+layer.shadowRadius = 10.0;  // 设置阴影的半径  
+layer.shadowColor = [UIColor blackColor].CGColor; // 设置阴影的颜色为黑色  
+layer.shadowOpacity = 0.9; // 设置阴影的不透明度
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<h1 id="importquartzcorequartzcoreh">import <quartzcore quartzcore.h="">  // 添加系统框架</quartzcore></h1>
+
+<p>layer.backgroundColor = [UIColor cyanColor].CGColor; // 给图层添加背景色 <br>
+layer.contents = (id)[UIImage imageNamed:@"view_BG.png"].CGImage; // 给图层添加背景图片 <br>
+layer.cornerRadius = 8;  // 将图层的边框设置为圆脚 <br>
+layer.masksToBounds = YES; // 隐藏边界 <br>
+layer.borderWidth = 5;  // 给图层添加一个有色边框 <br>
+layer.borderColor = [UIColor colorWithRed:0.52 green:0.09 blue:0.07 alpha:1].CGColor; <br>
+layer.shadowOffset = CGSizeMake(0, 3);  // 设置阴影的偏移量 <br>
+layer.shadowRadius = 10.0;  // 设置阴影的半径 <br>
+layer.shadowColor = [UIColor blackColor].CGColor; // 设置阴影的颜色为黑色 <br>
+layer.shadowOpacity = 0.9; // 设置阴影的不透明度</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "layer.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
