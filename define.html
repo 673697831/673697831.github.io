@@ -1,0 +1,510 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+Object-C 宏定义
+
+
+1、先来几个常用的：
+[objc] view plaincopyprint?
+// 是否高清屏    
+#define isRetina ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)    
+// 是否模拟器    
+#define isSimulator (NSNotFound != [[[UIDevice currentDevice] model] rangeOfString:@"Simulator"].location)    
+// 是否iPad    
+#define isPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)    
+// 是否iPad    
+#define someThing (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)? ipad: iphone   
+
+2、基本的使用：
+[objc] view plaincopyprint?
+//定义π值 3.1415926      
+#define PI 3.1415926       
+//则在程序用可以如下使用         
+double i=2*PI*3;       
+//效果相当于  double i=2*3.1415926*3;      
+    
+//预处理命令可以定义任何符合格式的形式，例如判断年份是否闰年    
+#define  IS_LEAP_YEAR  year%4==0&&year%100!=0||year%400==0      
+//使用时则可以直接      
+if(IS_LEAP_YEAR)      
+     
+//或者可以定义一个参数        
+#define  IS_LEAP_YEAR(y)  y%4==0&&y%100!=0||y%400==0      
+//使用时则可以直接       
+int ys=2012;       
+if(IS_LEAP_YEAR(ys))         
+      
+//通常预处理程序定义在一行 如果好分行 比如说太长需要换行  需要使用“/”符号 表示还有下一行，多行分列也是如此，例：      
+#Define  IS_LEAP_YEAR  year%4==0&&year%100!=0/      
+           ||year%400==0       
+//宏定义参数后边放一个# 那么在调用该宏时，预处理程序将根据宏参数创建C风格的常量字符串 例：      
+#define STR(x) # x      
+//将会使得 随后调用的        
+    
+NSLOG(STR(Programming in Objective-c./n));      
+//显示结果为 Programming in Objective-c./n   
+
+3、关于#与##的操作符：
+<1>.宏定义中字符串化操作符#：
+#的功能是将其后面的宏参数进行字符串化操作，意思就是对它所应用的宏变量通过替换后在其左右各加上一个双引号。例如
+[objc] view plaincopyprint?
+#define WARN_IF(EXPR)\    
+do {\    
+if (EXPR)\    
+fprintf(stderr, "Warning: " #EXPR "\n");\    
+} while(0)    
+    
+上面代码中的反斜线\主要用来转译换行符，即屏蔽换行符。    
+    
+那么如下的代码调用：    
+WARN_IF(divider == 0);    
+    
+将被解析为：    
+do {\    
+if (divider == 0)\    
+fprintf(stderr, "Warning: " "divider == 0" "\n");\    
+} while(0);  
+注意能够字符串化操作的必须是宏参数，不是随随便便的某个子串（token）都行的。
+<2>.宏定义中的连接符##：
+连接符##用来将两个token连接为一个token，但它不可以位于第一个token之前or最后一个token之后。注意这里连接的对象只要是token就行，而不一定是宏参数,但是##又必须位于宏定义中才有效，因其为编译期概念（比较绕）
+[objc] view plaincopyprint?
+#define LINK_MULTIPLE(a, b, c, d) a##_##b##_##c##_##d    
+typedef struct _record_type LINK_MULTIPLE(name, company, position, salary);    
+/*   
+* 上面的代码将被替换为   
+* typedef struct _record_type name_company_position_salary;   
+*/    
+    
+又如下面的例子：    
+#define PARSER(N) printf("token" #N " = %d\n", token##N)    
+    
+int token64 = 64;    
+    
+如下调用宏：    
+PARSER(64);    
+    
+将被解析为：    
+printf("token" "64" " = %d\n", token64);    
+    
+在obj-c中，如果我有如下定义：    
+#define _X(A, B) (A#B)    
+#define _XX(A, B) _X([NSString stringWithFormat:@"%@_c", A], B)    
+gcc将报错！    
+正确的写法为：    
+#define _XX(A, B) _X(([NSString stringWithFormat:@"%@_c", A]), B)   
+
+4、再来个宏定义 object-c 单例
+[objc] view plaincopyprint?
+#define GTMOBJECT_SINGLETON_BOILERPLATE(_object_name_, _shared_obj_name_)  
+static _object_name_ *z##_shared_obj_name_ = nil;   
++ (_object_name_ *)_shared_obj_name_ {              
+@synchronized(self) {                             
+if (z##_shared_obj_name_ == nil) {              
+/* Note that ‘self’ may not be the same as _object_name_ */                                
+/* first assignment done in allocWithZone but we must reassign in case init fails */       
+z##_shared_obj_name_ = [[self alloc] init];                                                
+_GTMDevAssert((z##_shared_obj_name_ != nil), @”didn’t catch singleton allocation”);        
+}                                               
+}                                                 
+return z##_shared_obj_name_;                      
+}                                                   
+  
++ (id)allocWithZone:(NSZone *)zone {                
+@synchronized(self) {                             
+if (z##_shared_obj_name_ == nil) {              
+z##_shared_obj_name_ = [super allocWithZone:zone];  
+return z##_shared_obj_name_;                  
+}                                               
+}                                                 
+   
+/* We can’t return the shared instance, because it’s been init’d */  
+_GTMDevAssert(NO, @”use the singleton API, not alloc+init”);         
+return nil;                                       
+}                                                   
+  
+- (id)retain {                                      
+return self;                                      
+}                                                   
+  
+- (NSUInteger)retainCount {                         
+return NSUIntegerMax;                             
+}                                                   
+  
+- (void)release {                                   
+}                                                   
+  
+- (id)autorelease {                                 
+return self;                                      
+}                                                   
+  
+- (id)copyWithZone:(NSZone *)zone {                 
+return self;                                      
+}  
+
+5、条件编译：
+[objc] view plaincopyprint?
+#if !defined(FCDebug) || FCDebug == 0  
+#define FCLOG(...) do {} while (0)  
+#define FCLOGINFO(...) do {} while (0)  
+#define FCLOGERROR(...) do {} while (0)  
+      
+#elif FCDebug == 1  
+#define FCLOG(...) NSLog(__VA_ARGS__)  
+#define FCLOGERROR(...) NSLog(__VA_ARGS__)  
+#define FCLOGINFO(...) do {} while (0)  
+      
+#elif FCDebug > 1  
+#define FCLOG(...) NSLog(__VA_ARGS__)  
+#define FCLOGERROR(...) NSLog(__VA_ARGS__)  
+#define FCLOGINFO(...) NSLog(__VA_ARGS__)  
+#endif  
+
+6、参照C语言的预处理命令简介 ：
+#define              定义一个预处理宏
+#undef               取消宏的定义
+#include            包含文件命令
+#include_next   与#include相似, 但它有着特殊的用途
+#if                      编译预处理中的条件命令, 相当于C语法中的if语句
+#ifdef                判断某个宏是否被定义, 若已定义, 执行随后的语句
+#ifndef             与#ifdef相反, 判断某个宏是否未被定义
+#elif                  若#if, #ifdef, #ifndef或前面的#elif条件不满足, 则执行#elif之后的语句, 相当于C语法中的else-if
+#else                与#if, #ifdef, #ifndef对应, 若这些条件不满足, 则执行#else之后的语句, 相当于C语法中的else
+#endif              #if, #ifdef, #ifndef这些条件命令的结束标志.
+defined            与#if, #elif配合使用, 判断某个宏是否被定义
+#line                标志该语句所在的行号
+#                      将宏参数替代为以参数值为内容的字符窜常量
+##                   将两个相邻的标记(token)连接为一个单独的标记
+#pragma        说明编译器信息#warning       显示编译警告信息
+#error            显示编译错误信息
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>Object-C 宏定义</p>
+
+<p>1、先来几个常用的：
+[objc] view plaincopyprint?
+// 是否高清屏    </p>
+
+<h1 id="defineisretinauiscreeninstancesrespondtoselectorselectorcurrentmodecgsizeequaltosizecgsizemake640960uiscreenmainscreencurrentmodesizeno">define isRetina ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 960), [[UIScreen mainScreen] currentMode].size) : NO)</h1>
+
+<p>// 是否模拟器    </p>
+
+<h1 id="defineissimulatornsnotfounduidevicecurrentdevicemodelrangeofstringsimulatorlocation">define isSimulator (NSNotFound != [[[UIDevice currentDevice] model] rangeOfString:@"Simulator"].location)</h1>
+
+<p>// 是否iPad    </p>
+
+<h1 id="defineispadui_user_interface_idiomuiuserinterfaceidiompad">define isPad (UI<em>USER</em>INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)</h1>
+
+<p>// 是否iPad    </p>
+
+<h1 id="definesomethingui_user_interface_idiomuiuserinterfaceidiompadipadiphone">define someThing (UI<em>USER</em>INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)? ipad: iphone</h1>
+
+<p>2、基本的使用：
+[objc] view plaincopyprint?
+//定义π值 3.1415926      </p>
+
+<h1 id="definepi31415926">define PI 3.1415926</h1>
+
+<p>//则在程序用可以如下使用 <br>
+double i=2<em>PI</em>3; <br>
+//效果相当于  double i=2<em>3.1415926</em>3;      </p>
+
+<p>//预处理命令可以定义任何符合格式的形式，例如判断年份是否闰年    </p>
+
+<h1 id="defineis_leap_yearyear40year1000year4000">define  IS<em>LEAP</em>YEAR  year%4==0&amp;&amp;year%100!=0||year%400==0</h1>
+
+<p>//使用时则可以直接 <br>
+if(IS<em>LEAP</em>YEAR)      </p>
+
+<p>//或者可以定义一个参数        </p>
+
+<h1 id="defineis_leap_yearyy40y1000y4000">define  IS<em>LEAP</em>YEAR(y)  y%4==0&amp;&amp;y%100!=0||y%400==0</h1>
+
+<p>//使用时则可以直接 <br>
+int ys=2012; <br>
+if(IS<em>LEAP</em>YEAR(ys))         </p>
+
+<p>//通常预处理程序定义在一行 如果好分行 比如说太长需要换行  需要使用“/”符号 表示还有下一行，多行分列也是如此，例：      </p>
+
+<h1 id="defineis_leap_yearyear40year1000">Define  IS<em>LEAP</em>YEAR  year%4==0&amp;&amp;year%100!=0/</h1>
+
+<pre><code>       ||year%400==0       
+</code></pre>
+
+<p>//宏定义参数后边放一个# 那么在调用该宏时，预处理程序将根据宏参数创建C风格的常量字符串 例：      </p>
+
+<h1 id="definestrxx">define STR(x) # x</h1>
+
+<p>//将会使得 随后调用的        </p>
+
+<p>NSLOG(STR(Programming in Objective-c./n)); <br>
+//显示结果为 Programming in Objective-c./n   </p>
+
+<p>3、关于#与##的操作符：
+&lt;1&gt;.宏定义中字符串化操作符#：</p>
+
+<h1 id="">的功能是将其后面的宏参数进行字符串化操作，意思就是对它所应用的宏变量通过替换后在其左右各加上一个双引号。例如</h1>
+
+<p>[objc] view plaincopyprint?</p>
+
+<h1 id="definewarn_ifexpr">define WARN_IF(EXPR)\</h1>
+
+<p>do {\ <br>
+if (EXPR)\ <br>
+fprintf(stderr, "Warning: " #EXPR "\n");\ <br>
+} while(0)    </p>
+
+<p>上面代码中的反斜线\主要用来转译换行符，即屏蔽换行符。    </p>
+
+<p>那么如下的代码调用： <br>
+WARN_IF(divider == 0);    </p>
+
+<p>将被解析为： <br>
+do {\ <br>
+if (divider == 0)\ <br>
+fprintf(stderr, "Warning: " "divider == 0" "\n");\ <br>
+} while(0); <br>
+注意能够字符串化操作的必须是宏参数，不是随随便便的某个子串（token）都行的。
+&lt;2&gt;.宏定义中的连接符##：
+连接符##用来将两个token连接为一个token，但它不可以位于第一个token之前or最后一个token之后。注意这里连接的对象只要是token就行，而不一定是宏参数,但是##又必须位于宏定义中才有效，因其为编译期概念（比较绕）
+[objc] view plaincopyprint?</p>
+
+<h1 id="definelink_multipleabcda_b_c_d">define LINK<em>MULTIPLE(a, b, c, d) a##</em>##b##<em>##c##</em>##d</h1>
+
+<p>typedef struct <em>record</em>type LINK<em>MULTIPLE(name, company, position, salary); <br>
+/* <br>
+* 上面的代码将被替换为 <br>
+* typedef struct _record</em>type name<em>company</em>position_salary; <br>
+*/    </p>
+
+<p>又如下面的例子：    </p>
+
+<h1 id="defineparsernprintftokenndntokenn">define PARSER(N) printf("token" #N " = %d\n", token##N)</h1>
+
+<p>int token64 = 64;    </p>
+
+<p>如下调用宏： <br>
+PARSER(64);    </p>
+
+<p>将被解析为： <br>
+printf("token" "64" " = %d\n", token64);    </p>
+
+<p>在obj-c中，如果我有如下定义：    </p>
+
+<h1 id="define_xabab">define _X(A, B) (A#B)</h1>
+
+<h1 id="define_xxab_xnsstringstringwithformat_cab">define <em>XX(A, B) _X([NSString stringWithFormat:@"%@</em>c", A], B)</h1>
+
+<p>gcc将报错！ <br>
+正确的写法为：    </p>
+
+<h1 id="define_xxab_xnsstringstringwithformat_cab">define <em>XX(A, B) _X(([NSString stringWithFormat:@"%@</em>c", A]), B)</h1>
+
+<p>4、再来个宏定义 object-c 单例
+[objc] view plaincopyprint?</p>
+
+<h1 id="definegtmobject_singleton_boilerplate_object_name__shared_obj_name_">define GTMOBJECT<em>SINGLETON</em>BOILERPLATE(<em>object</em>name<em>, _shared</em>obj<em>name</em>)</h1>
+
+<p>static <em>object</em>name_ <em>z##_shared_obj_name_ = nil; <br>
++ (_object_name_ *)_shared_obj_name_ { <br>
+@synchronized(self) { <br>
+if (z##_shared_obj_name_ == nil) { <br>
+/</em> Note that ‘self’ may not be the same as <em>object</em>name_ <em>/ <br>
+/</em> first assignment done in allocWithZone but we must reassign in case init fails */ <br>
+z##<em>shared</em>obj<em>name</em> = [[self alloc] init]; <br>
+<em>GTMDevAssert((z##</em>shared<em>obj</em>name_ != nil), @”didn’t catch singleton allocation”); <br>
+} <br>
+} <br>
+return z##<em>shared</em>obj<em>name</em>; <br>
+}                                                   </p>
+
+<ul>
+<li>(id)allocWithZone:(NSZone *)zone { <br>
+@synchronized(self) { <br>
+if (z##<em>shared</em>obj<em>name</em> == nil) { <br>
+z##<em>shared</em>obj<em>name</em> = [super allocWithZone:zone]; <br>
+return z##<em>shared</em>obj<em>name</em>; <br>
+} <br>
+}                                                 </li>
+</ul>
+
+<p>/* We can’t return the shared instance, because it’s been init’d */ <br>
+_GTMDevAssert(NO, @”use the singleton API, not alloc+init”); <br>
+return nil; <br>
+}                                                   </p>
+
+<ul>
+<li><p>(id)retain { <br>
+return self; <br>
+}                                                   </p></li>
+<li><p>(NSUInteger)retainCount { <br>
+return NSUIntegerMax; <br>
+}                                                   </p></li>
+<li><p>(void)release { <br>
+}                                                   </p></li>
+<li><p>(id)autorelease { <br>
+return self; <br>
+}                                                   </p></li>
+<li><p>(id)copyWithZone:(NSZone *)zone { <br>
+return self; <br>
+}  </p></li>
+</ul>
+
+<p>5、条件编译：
+[objc] view plaincopyprint?</p>
+
+<h1 id="ifdefinedfcdebugfcdebug0">if !defined(FCDebug) || FCDebug == 0</h1>
+
+<h1 id="definefclogdowhile0">define FCLOG(...) do {} while (0)</h1>
+
+<h1 id="definefcloginfodowhile0">define FCLOGINFO(...) do {} while (0)</h1>
+
+<h1 id="definefclogerrordowhile0">define FCLOGERROR(...) do {} while (0)</h1>
+
+<h1 id="eliffcdebug1">elif FCDebug == 1</h1>
+
+<h1 id="definefclognslog__va_args__">define FCLOG(...) NSLog(<strong>VA_ARGS</strong>)</h1>
+
+<h1 id="definefclogerrornslog__va_args__">define FCLOGERROR(...) NSLog(<strong>VA_ARGS</strong>)</h1>
+
+<h1 id="definefcloginfodowhile0">define FCLOGINFO(...) do {} while (0)</h1>
+
+<h1 id="eliffcdebug1">elif FCDebug &gt; 1</h1>
+
+<h1 id="definefclognslog__va_args__">define FCLOG(...) NSLog(<strong>VA_ARGS</strong>)</h1>
+
+<h1 id="definefclogerrornslog__va_args__">define FCLOGERROR(...) NSLog(<strong>VA_ARGS</strong>)</h1>
+
+<h1 id="definefcloginfonslog__va_args__">define FCLOGINFO(...) NSLog(<strong>VA_ARGS</strong>)</h1>
+
+<h1 id="endif">endif</h1>
+
+<p>6、参照C语言的预处理命令简介 ：</p>
+
+<h1 id="define">define              定义一个预处理宏</h1>
+
+<h1 id="undef">undef               取消宏的定义</h1>
+
+<h1 id="include">include            包含文件命令</h1>
+
+<h1 id="include_nextinclude">include_next   与#include相似, 但它有着特殊的用途</h1>
+
+<h1 id="ifcif">if                      编译预处理中的条件命令, 相当于C语法中的if语句</h1>
+
+<h1 id="ifdef">ifdef                判断某个宏是否被定义, 若已定义, 执行随后的语句</h1>
+
+<h1 id="ifndefifdef">ifndef             与#ifdef相反, 判断某个宏是否未被定义</h1>
+
+<h1 id="elifififdefifndefelifelifcelseif">elif                  若#if, #ifdef, #ifndef或前面的#elif条件不满足, 则执行#elif之后的语句, 相当于C语法中的else-if</h1>
+
+<h1 id="elseififdefifndefelsecelse">else                与#if, #ifdef, #ifndef对应, 若这些条件不满足, 则执行#else之后的语句, 相当于C语法中的else</h1>
+
+<h1 id="endifififdefifndef">endif              #if, #ifdef, #ifndef这些条件命令的结束标志.</h1>
+
+<p>defined            与#if, #elif配合使用, 判断某个宏是否被定义</p>
+
+<h1 id="line">line                标志该语句所在的行号</h1>
+
+<h1 id="">将宏参数替代为以参数值为内容的字符窜常量</h1>
+
+<h2 id="token">将两个相邻的标记(token)连接为一个单独的标记</h2>
+
+<h1 id="pragmawarning">pragma        说明编译器信息#warning       显示编译警告信息</h1>
+
+<h1 id="error">error            显示编译错误信息</h1>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "define.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
