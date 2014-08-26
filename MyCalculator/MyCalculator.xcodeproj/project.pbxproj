@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20390C9519AB9A36005EF641 /* PassKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20390C9419AB9A36005EF641 /* PassKit.framework */; };
+		20390C9819AB9A3E005EF641 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20390C9719AB9A3E005EF641 /* MapKit.framework */; };
+		20390C9B19AC2A7B005EF641 /* CalculatorModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 20390C9A19AC2A7B005EF641 /* CalculatorModel.m */; };
 		205BE52619A8863100FA5B35 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205BE52519A8863100FA5B35 /* Foundation.framework */; };
 		205BE52819A8863100FA5B35 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205BE52719A8863100FA5B35 /* CoreGraphics.framework */; };
 		205BE52A19A8863100FA5B35 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205BE52919A8863100FA5B35 /* UIKit.framework */; };
@@ -19,6 +22,7 @@
 		205BE54119A8863100FA5B35 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205BE52919A8863100FA5B35 /* UIKit.framework */; };
 		205BE54919A8863100FA5B35 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205BE54719A8863100FA5B35 /* InfoPlist.strings */; };
 		205BE54B19A8863100FA5B35 /* MyCalculatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 205BE54A19A8863100FA5B35 /* MyCalculatorTests.m */; };
+		20AD935819AB725800D0C787 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20AD935719AB725800D0C787 /* StoreKit.framework */; };
 		20D0F5A319A888CF00748A3D /* Calculator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D0F5A219A888CF00748A3D /* Calculator.m */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +37,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20390C9419AB9A36005EF641 /* PassKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PassKit.framework; path = System/Library/Frameworks/PassKit.framework; sourceTree = SDKROOT; };
+		20390C9619AB9A36005EF641 /* MyCalculator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MyCalculator.entitlements; sourceTree = "<group>"; };
+		20390C9719AB9A3E005EF641 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		20390C9919AC2A7B005EF641 /* CalculatorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalculatorModel.h; sourceTree = "<group>"; };
+		20390C9A19AC2A7B005EF641 /* CalculatorModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalculatorModel.m; sourceTree = "<group>"; };
 		205BE52219A8863100FA5B35 /* MyCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		205BE52519A8863100FA5B35 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		205BE52719A8863100FA5B35 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -49,6 +58,7 @@
 		205BE54619A8863100FA5B35 /* MyCalculatorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MyCalculatorTests-Info.plist"; sourceTree = "<group>"; };
 		205BE54819A8863100FA5B35 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		205BE54A19A8863100FA5B35 /* MyCalculatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyCalculatorTests.m; sourceTree = "<group>"; };
+		20AD935719AB725800D0C787 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		20D0F5A119A888CF00748A3D /* Calculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calculator.h; sourceTree = "<group>"; };
 		20D0F5A219A888CF00748A3D /* Calculator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calculator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,8 +69,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				205BE52819A8863100FA5B35 /* CoreGraphics.framework in Frameworks */,
+				20390C9519AB9A36005EF641 /* PassKit.framework in Frameworks */,
 				205BE52A19A8863100FA5B35 /* UIKit.framework in Frameworks */,
 				205BE52619A8863100FA5B35 /* Foundation.framework in Frameworks */,
+				20390C9819AB9A3E005EF641 /* MapKit.framework in Frameworks */,
+				20AD935819AB725800D0C787 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +112,9 @@
 		205BE52419A8863100FA5B35 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				20390C9719AB9A3E005EF641 /* MapKit.framework */,
+				20390C9419AB9A36005EF641 /* PassKit.framework */,
+				20AD935719AB725800D0C787 /* StoreKit.framework */,
 				205BE52519A8863100FA5B35 /* Foundation.framework */,
 				205BE52719A8863100FA5B35 /* CoreGraphics.framework */,
 				205BE52919A8863100FA5B35 /* UIKit.framework */,
@@ -110,12 +126,15 @@
 		205BE52B19A8863100FA5B35 /* MyCalculator */ = {
 			isa = PBXGroup;
 			children = (
+				20390C9619AB9A36005EF641 /* MyCalculator.entitlements */,
 				205BE53419A8863100FA5B35 /* AppDelegate.h */,
 				205BE53519A8863100FA5B35 /* AppDelegate.m */,
 				20D0F5A119A888CF00748A3D /* Calculator.h */,
 				20D0F5A219A888CF00748A3D /* Calculator.m */,
 				205BE53719A8863100FA5B35 /* Images.xcassets */,
 				205BE52C19A8863100FA5B35 /* Supporting Files */,
+				20390C9919AC2A7B005EF641 /* CalculatorModel.h */,
+				20390C9A19AC2A7B005EF641 /* CalculatorModel.m */,
 			);
 			path = MyCalculator;
 			sourceTree = "<group>";
@@ -196,6 +215,26 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "___FULLUSERNAME___";
 				TargetAttributes = {
+					205BE52119A8863100FA5B35 = {
+						DevelopmentTeam = LHVTQU6K86;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+							com.apple.Passbook = {
+								enabled = 1;
+							};
+							com.apple.iOS = {
+								enabled = 1;
+							};
+						};
+					};
 					205BE53C19A8863100FA5B35 = {
 						TestTargetID = 205BE52119A8863100FA5B35;
 					};
@@ -247,6 +286,7 @@
 				20D0F5A319A888CF00748A3D /* Calculator.m in Sources */,
 				205BE53619A8863100FA5B35 /* AppDelegate.m in Sources */,
 				205BE53219A8863100FA5B35 /* main.m in Sources */,
+				20390C9B19AC2A7B005EF641 /* CalculatorModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,10 +405,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = MyCalculator/MyCalculator.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Rice Donate (QFD4VQ9BE8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MyCalculator/MyCalculator-Prefix.pch";
 				INFOPLIST_FILE = "MyCalculator/MyCalculator-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "952188c9-e49a-4e21-b620-5a4c9a9cf86d";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -378,10 +423,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_ENTITLEMENTS = MyCalculator/MyCalculator.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Rice Donate (QFD4VQ9BE8)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MyCalculator/MyCalculator-Prefix.pch";
 				INFOPLIST_FILE = "MyCalculator/MyCalculator-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "952188c9-e49a-4e21-b620-5a4c9a9cf86d";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

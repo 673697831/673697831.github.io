@@ -12,6 +12,7 @@
 #define MINUS -4
 #define MUL -5
 #define DIV -6
+#define MAX_LEN 10
 
 @interface Calculator ()
 
@@ -32,20 +33,9 @@
 
 -(void) reset
 {
-    opc = @"";
-    op1 = 0.0;
-    op2 = 0.0;
-    result = 0.0;
-    second_num = 0;
-    did_second = false;
-    opi = 0;
-    lastInput = -1;  // 上一个键入的内容类型0代表数字,1代表操作符
-    lastSign = -1;
-    hasPoint = NO;   // 是否输入了小数点
-    lastOp = -1;    // 初始时为-1
-    isError = 0;
+    [model reset];
+    [label_result setText:[NSString stringWithFormat:@"0"]];
     [label_op setText:[NSString stringWithFormat:@""]];
-    [label_result setText:[NSString stringWithFormat:@"%d", 0]];
 }
 
 -(IBAction) inputCommand:(id) sender {
@@ -71,197 +61,33 @@
 }
 -(void) inputANumber:(NSInteger) number {
     //[label_result setText:[NSString stringWithFormat:@"%d", number]];
-    if ( [opc length]>=20 ) {
+    NSString *st = [model operateWithNumber:number];
+    NSLog(@"operateWithNumber:%@", st);
+    
+    if (!st) {
         return;
     }
-    if ( number==99 ) {
-        // 输入小数点
-        if ( hasPoint==NO ) {
-            if ( [opc intValue]==0 ) {
-                opc = @"0";
-            }
-            opc = [NSString stringWithFormat:@"%@.",opc];
-            hasPoint = YES;
-        }
-    } else {
-        // 输入数字
-        if ( hasPoint==YES ) {
-            opc = [NSString stringWithFormat:@"%@%d", opc, number];
-        } else {
-            if ( [opc intValue]==0 ) {
-                //if ( number>0 ) {
-                    opc = [NSString stringWithFormat:@"%d", number];
-                //}
-            } else {
-                opc = [NSString stringWithFormat:@"%@%d", opc, number];
-            }
-        }
-    }
-    if ( opi == 0 ) {
-        op1 = [opc doubleValue];
-        did_second = false;
-    } else {
-        op2 = [opc doubleValue];
-        did_second = true;
-        second_num = op2;
-    }
-    lastInput = number;
-    [label_result setText:[NSString stringWithFormat:@"%@", opc]];
+    
+    
+    [label_result setText:[NSString stringWithFormat:@"%@", st]];
 }
 // 输入操作符
 -(void) inputAOperator:(NSInteger) opt{
-    switch (opt) {
-        case EQUAL:
-            [label_op setText:[NSString stringWithFormat:@"="]];
-            break;
-        case PLUS:
-            [label_op setText:[NSString stringWithFormat:@"+"]];
-            break;
-        case MINUS:
-            [label_op setText:[NSString stringWithFormat:@"-"]];
-            break;
-        case DIV:
-            [label_op setText:[NSString stringWithFormat:@"/"]];
-            break;
-        case MUL:
-            [label_op setText:[NSString stringWithFormat:@"×"]];
-            break;
-        default:
-            [label_op setText:[NSString stringWithFormat:@""]];
-            break;
-    }
     
-    
-    double _result = 0;
-    
-    if ( opt==-2 ) {
-        if ( lastOp == -1 ){
-            if ( [opc doubleValue]!=0.0 ) {
-                result = [opc doubleValue];
-                opc = @"";
-            }
-            _result = result;
-        }else
-        {
-            NSLog(@"%f,%f,%ld",op1,op2,(long)lastOp);
-            _result = [self getResult:op1 :op2 :opt];
-            result = _result;
-        }
-        
-        lastNumber = &result;
-        opi = 0;
-        op1 = result;
-        op2 = 0;
-        opc = @"";
-    } else if ( opt<0 ) {
-        if (lastOp==-1){
-            _result = [opc doubleValue];
-        }else
-        {
-            if (lastOp != EQUAL && opt != EQUAL && lastInput < -1)
-            {
-                _result = op1;
-            }else
-            {
-                _result = [self getResult:op1 :op2 :opt];
-            }
-        }
-        
-        //_result = [opc doubleValue];
-        result = _result;
-        opi = 1;
-        op1 = result;
-        opc = @"";
-        op2 = 0;
-        lastSign = opt;
-        //did_second = false;
-    } else {
-        // functional addition
-    }
-    hasPoint = NO;
-    lastOp = opt;
-    
-    if ( isError == 0 ) {
-        //[self displayResult: [NSString stringWithFormat:@"%g",_result]];
-        [label_result setText:[NSString stringWithFormat:@"%.10g", _result]];
-    } else {
-        //[self displayError:isError];
-        [label_result setText:[NSString stringWithFormat:@"除数不能为0！"]];
-        isError = 0;
-    }
-    lastInput = opt;
-    
-    //[self debugInfo:@"操作完成\n"];
+    NSString *st = [NSString stringWithFormat:@"%@", [model operateWithOp:opt]];
+    NSLog(@"operateWithOp:%@", st);
+    [label_result setText:[NSString stringWithFormat:@"%@", st]];
+    st = [NSString stringWithFormat:@"%@", [model getSymbol:opt]];
+    [label_op setText:[NSString stringWithFormat:@"%@", st]];
     
 }
 
-
-
-// 获得运算结果
--(double) getResult:(double)number1 :(double)number2 :(NSInteger)operation {
-    double _result = 0;
-    
-    
-    
-    if (!did_second)
-    {
-        number2 = number1;
-        did_second = true;
-        second_num = number2;
-    }
-    else
-    {
-        number2 = second_num;
-    }
-        switch ( lastOp ) {
-            case EQUAL:
-                //_result = [self getResult:number1 :number2 :operation];
-                // lastOp = -1;
-                if (operation == EQUAL)
-                {
-                    //_result = [self getResult:number1 :number2:lastOp];
-                    if (lastSign != -1)
-                    {
-                        lastOp = lastSign;
-                        _result = [self getResult:number1 :number2:lastOp];
-                    }else
-                    {
-                    
-                    }
-                }
-                else{
-                    _result = number1;
-                }
-                break;
-            case PLUS:
-                _result = number1 + number2;
-                break;
-            case MINUS:
-                _result = number1 - number2;
-                break;
-            case MUL:
-                _result = number1 * number2;
-                break;
-            case DIV:
-                if ( number2 != 0 ) {
-                    _result = number1 / number2;
-                } else {
-                    // ErrorID == 1 for Cant div 0
-                    isError = 1;
-                }
-                break;
-            case -1:
-                _result = number1;
-                break;
-            default:
-                break;
-    }
-    return _result;
-}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    model = [[CalculatorModel alloc]init];
+    [self reset];
     int min_x = 30;
     int max_y = 440;
     

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "CalculatorModel.h"
 @interface Calculator : UIViewController
 {
     IBOutlet UILabel *label_result;
@@ -30,6 +30,7 @@
     int opi;        // 当前操作数序号
     bool hasPoint;   // 是否输入了小数点
     int lastInput;  // 最后输入的类型
+    CalculatorModel *model;
 }
 @property(nonatomic,retain)IBOutlet UIButton *button1;
 @property(nonatomic,retain)IBOutlet UIButton *button0;
