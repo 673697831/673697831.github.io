@@ -407,7 +407,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = MyCalculator/MyCalculator.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Rice Donate (QFD4VQ9BE8)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Rice Donate (QFD4VQ9BE8)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MyCalculator/MyCalculator-Prefix.pch";
 				INFOPLIST_FILE = "MyCalculator/MyCalculator-Info.plist";
@@ -425,7 +425,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = MyCalculator/MyCalculator.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Rice Donate (QFD4VQ9BE8)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Rice Donate (QFD4VQ9BE8)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MyCalculator/MyCalculator-Prefix.pch";
 				INFOPLIST_FILE = "MyCalculator/MyCalculator-Info.plist";

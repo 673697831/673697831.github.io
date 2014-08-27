@@ -23,6 +23,8 @@
 }
 
 - (void)reset;
+- (int)checkLastInput;
+- (NSString *)back;
 - (double)getResult:(int)input;
 - (bool)checkInputLen:(int)len;
 - (NSString *)getSymbol:(int)input;

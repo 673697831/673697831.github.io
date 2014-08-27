@@ -39,7 +39,7 @@
 
 // 重置状态
 -(void) reset;
--(void) resetAll;
+-(void) initRecognizer;
 
 -(IBAction) inputCommand:(id) sender;
 -(IBAction) inputNumberic:(id) sender;

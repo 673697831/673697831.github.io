@@ -202,6 +202,23 @@
         layer.borderColor = [UIColor orangeColor].CGColor;
     }
     [self reset];
+    
+    [self initRecognizer];
+}
+
+- (void)initRecognizer
+{
+    UISwipeGestureRecognizer *recognizer;
+    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionRight)];
+    [[self view] addGestureRecognizer:recognizer];
+    recognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeFrom:)];
+    [recognizer setDirection:(UISwipeGestureRecognizerDirectionLeft)];
+    [[self view] addGestureRecognizer:recognizer];
+}
+
+-(void)handleSwipeFrom:(UISwipeGestureRecognizer *)recognizer {
+    [self inputANumber: -1];
 }
 
 - (void)updateButtonStatus:(id) sender

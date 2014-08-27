@@ -26,7 +26,39 @@
     hasPoint = NO;//是否有小数点
     isError = NO;//是否有错误信息
     lastFun = -1;//上一次运算符
+    lastInput = -1;
 }
+
+- (int) checkLastInput
+{
+    if (lastInput == -1) {
+        return -1;
+    }
+    
+    if (lastInput < 0){
+        return 0;
+    }
+    
+    return 1;
+    
+}
+
+- (NSString *)back
+{
+    if ([self checkLastInput] == 1) {
+        if ([opc length] <= 1) {
+            opc = @"0";
+        }
+        else{
+            opc = [opc substringToIndex:([opc length] - 1)];
+            NSLog(@"eeeeeeeeeeee%@", opc);
+        }
+        return opc;
+    }
+    return nil;
+}
+
+
 - (NSString *)getSymbol:(int)input
 {
     NSString *symbol;
@@ -73,10 +105,27 @@
 
 - (NSString *)operateWithNumber:(int)number
 {
-    if (![self checkInputLen:[opc length]]) {
-        return nil;
-    }
-    if ( number==99 ) {
+    if (number == -1) {
+        if (lastInput < 0 ) {
+            return nil;
+        }
+        
+        //char tmp = [opc characterAtIndex:([opc length] - 1)];
+        if ([opc characterAtIndex:([opc length] - 1)] == '.') {
+            hasPoint = NO;
+        }
+        if ([opc length] <= 1) {
+            opc = @"0";
+        }
+        else{
+            opc = [opc substringToIndex:([opc length] - 1)];
+        }
+    }else if ( number==99 ) {
+        
+        if (![self checkInputLen:[opc length]]) {
+            return nil;
+        }
+        
         // 输入小数点
         if ( hasPoint==NO ) {
             if ( [opc intValue]==0 ) {
@@ -85,7 +134,12 @@
             opc = [NSString stringWithFormat:@"%@.",opc];
             hasPoint = YES;
         }
-    } else {
+    } else{
+        
+        if (![self checkInputLen:[opc length]]) {
+            return nil;
+        }
+        
         // 输入数字
         if ( hasPoint==YES ) {
             opc = [NSString stringWithFormat:@"%@%d", opc, number];
@@ -99,6 +153,7 @@
             }
         }
     }
+    
     if ( lastOp == EQUAL || lastOp == -1) {
         op1 = [opc doubleValue];
         //did_second = false;
@@ -106,7 +161,13 @@
         op2 = [opc doubleValue];
     }
     //返回当前操作数
-    lastInput = number;
+    
+    if (number >= 0) {
+        lastInput = number;
+    }else
+    {
+        //lastInput = (int)[opc characterAtIndex:[opc length]];
+    }
     return opc;
 }
 
@@ -236,3 +297,4 @@
     return _result;
 }
 @end
+
