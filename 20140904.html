@@ -34,6 +34,14 @@
 
 tableviewcell和collectionviewcell注册问题
 [self.collectionView registerClass:[ProgramListCell class] forCellWithReuseIdentifier:@"Programe Cell"];
+
+设置圆角要在layer里面设
+并把控件背景颜色清空
+label.backgroundColor = [UIColor clearColor];
+label.layer.backgroundColor =[UIColor colorWithHexString:@"dddddd"].CGColor;
+label.layer.cornerRadius =3.0;
+label.layer.frame = CGRectInset(self.label3.layer.frame, 0, 0);
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -45,6 +53,13 @@ tableviewcell和collectionviewcell注册问题
 
 <p>tableviewcell和collectionviewcell注册问题
 [self.collectionView registerClass:[ProgramListCell class] forCellWithReuseIdentifier:@"Programe Cell"];</p>
+
+<p>设置圆角要在layer里面设
+并把控件背景颜色清空
+label.backgroundColor = [UIColor clearColor];
+label.layer.backgroundColor =[UIColor colorWithHexString:@"dddddd"].CGColor;
+label.layer.cornerRadius =3.0;
+label.layer.frame = CGRectInset(self.label3.layer.frame, 0, 0);</p>
 <!-- content end -->
 </div>
 <br>
