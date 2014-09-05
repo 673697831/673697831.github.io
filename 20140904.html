@@ -42,6 +42,34 @@ label.layer.backgroundColor =[UIColor colorWithHexString:@"dddddd"].CGColor;
 label.layer.cornerRadius =3.0;
 label.layer.frame = CGRectInset(self.label3.layer.frame, 0, 0);
 
+进度条
+CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = CGRectMake(0, -frame.origin.y, frame.size.width, frame.size.height + frame.origin.y);
+    CGPoint startPoint = CGPointMake(0, 0.5);
+    CGPoint endPoint = CGPointMake(1, 0.5);
+    gradient.startPoint = startPoint;
+    gradient.endPoint = endPoint;
+    gradient.colors = [NSArray arrayWithObjects:
+                       //(id)[UIColor colorWithHexString:@"f16400"].CGColor,
+                       (id)[UIColor blackColor].CGColor,
+                       (id)[UIColor blackColor].CGColor,
+                       (id)[UIColor colorWithHexString:@"f17d00"].CGColor,
+                       (id)[UIColor colorWithHexString:@"f17d00"].CGColor,
+                       nil];
+    gradient.locations = [NSArray arrayWithObjects:
+                          [NSNumber numberWithFloat:0.0],
+                          [NSNumber numberWithFloat:0.5],
+                          [NSNumber numberWithFloat:0.5],
+                          [NSNumber numberWithFloat:1.0],
+                          nil
+                          ];
+    gradient.cornerRadius = 20;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    
+    [self.navigationController.navigationBar.layer insertSublayer:gradient atIndex:0];
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -60,6 +88,36 @@ label.backgroundColor = [UIColor clearColor];
 label.layer.backgroundColor =[UIColor colorWithHexString:@"dddddd"].CGColor;
 label.layer.cornerRadius =3.0;
 label.layer.frame = CGRectInset(self.label3.layer.frame, 0, 0);</p>
+
+<p>进度条
+CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = CGRectMake(0, -frame.origin.y, frame.size.width, frame.size.height + frame.origin.y);
+    CGPoint startPoint = CGPointMake(0, 0.5);
+    CGPoint endPoint = CGPointMake(1, 0.5);
+    gradient.startPoint = startPoint;
+    gradient.endPoint = endPoint;
+    gradient.colors = [NSArray arrayWithObjects:
+                       //(id)[UIColor colorWithHexString:@"f16400"].CGColor,
+                       (id)[UIColor blackColor].CGColor,
+                       (id)[UIColor blackColor].CGColor,
+                       (id)[UIColor colorWithHexString:@"f17d00"].CGColor,
+                       (id)[UIColor colorWithHexString:@"f17d00"].CGColor,
+                       nil];
+    gradient.locations = [NSArray arrayWithObjects:
+                          [NSNumber numberWithFloat:0.0],
+                          [NSNumber numberWithFloat:0.5],
+                          [NSNumber numberWithFloat:0.5],
+                          [NSNumber numberWithFloat:1.0],
+                          nil
+                          ];
+    gradient.cornerRadius = 20;
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;</p>
+
+<pre><code>[self.navigationController.navigationBar.layer insertSublayer:gradient atIndex:0];
+</code></pre>
 <!-- content end -->
 </div>
 <br>
