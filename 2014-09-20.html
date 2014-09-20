@@ -33,6 +33,12 @@
 2.tabBar字体不用默认系统颜色
     [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor], NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];
 
+3.UIButton可以直接设每个状态下的不同图片 并可以为图片或者title
+设置偏移量
+     [button setImageEdgeInsets:UIEdgeInsetsMake(0,0,15,0)];(上左下右偏移)
+     [button setTitleEdgeInsets:<#(UIEdgeInsets)#>]
+
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -43,6 +49,11 @@
 
 <p>2.tabBar字体不用默认系统颜色
     [[UITabBarItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor], NSForegroundColorAttributeName, nil] forState:UIControlStateNormal];</p>
+
+<p>3.UIButton可以直接设每个状态下的不同图片 并可以为图片或者title
+设置偏移量
+     [button setImageEdgeInsets:UIEdgeInsetsMake(0,0,15,0)];(上左下右偏移)
+     [button setTitleEdgeInsets:&lt;#(UIEdgeInsets)#&gt;]</p>
 <!-- content end -->
 </div>
 <br>
