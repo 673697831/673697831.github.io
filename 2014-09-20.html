@@ -38,7 +38,13 @@
      [button setImageEdgeInsets:UIEdgeInsetsMake(0,0,15,0)];(上左下右偏移)
      [button setTitleEdgeInsets:<#(UIEdgeInsets)#>]
 
+4.UIButton设置图片或者title一定要使用
+     [button setTitle:@"geigh" forState:UIControlStateNormal];
+     [button setTitleColor:[UIColor blackColor]forState:UIControlStateNormal];
+     [button setImage:[UIImage imageNamed:@"tabbar_ fav_normal"] forState:UIControlStateNormal];
 
+     设置其他常量例如字体
+     button.titleLabel.font = [UIFont systemFontOfSize:9];
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -54,6 +60,15 @@
 设置偏移量
      [button setImageEdgeInsets:UIEdgeInsetsMake(0,0,15,0)];(上左下右偏移)
      [button setTitleEdgeInsets:&lt;#(UIEdgeInsets)#&gt;]</p>
+
+<p>4.UIButton设置图片或者title一定要使用
+     [button setTitle:@"geigh" forState:UIControlStateNormal];
+     [button setTitleColor:[UIColor blackColor]forState:UIControlStateNormal];
+     [button setImage:[UIImage imageNamed:@"tabbar_ fav_normal"] forState:UIControlStateNormal];</p>
+
+<pre><code> 设置其他常量例如字体
+ button.titleLabel.font = [UIFont systemFontOfSize:9];
+</code></pre>
 <!-- content end -->
 </div>
 <br>
