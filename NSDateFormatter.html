@@ -27,6 +27,7 @@
 <!-- markdown -->
 大神代码:
 1.
+NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear| NSCalendarUnitWeekday fromDate:date];
 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 dateFormatter.locale = [NSLocale currentLocale];
 NSLog(@"%@", [NSString stringWithFormat:@"%d", comps.day]);
@@ -48,6 +49,7 @@ NSString* dateString = [fmt stringFromDate:confromTimesp];
 <!-- content -->
 <p>大神代码:
 1.
+NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear| NSCalendarUnitWeekday fromDate:date];
 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 dateFormatter.locale = [NSLocale currentLocale];
 NSLog(@"%@", [NSString stringWithFormat:@"%d", comps.day]);
