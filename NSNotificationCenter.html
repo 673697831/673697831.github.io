@@ -1,0 +1,522 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+Notification的工作机制
+1.对应用程序中其他地方发生的事件（比如增加一条数据库记录）感兴趣的对象，会向通告中心(Notification Center，NSNotificationCenter类的实例)注册，从而成为该事件的监听者。在注册过程中，监听者需要指定方法供通告中心在事件发生时调用。
+2.给数据库添加记录（或者类似事件）的对象给通告中心发一个通告（NSnotification的实例）。该通告对象包括识别通告的标志、发布通告的对象ID和可选的附加信息字典。
+3.通告中心发送消息到每个已注册的监听者，调用监听者指定的方法会将通告传给这些监听者。
+ 
+NSNotification对象
+NSNotification包含三个属性：
+name一个notification对象的name，由我们自己定义
+objectpost该notification的object，也就是sender
+userInfo伴随notification传递过去的数据，是一个NSDictionary
+ 
+NSNotificationCenter中的方法
+Getting the Notification Center
++ defaultCenter该方法用于获取当前程序中的center object
+Managing Notification Observers
+– addObserverForName:object:queue:usingBlock:
+对快代码的操作，详见：http://blog.sina.com.cn/s/blog_63ced45101016cih.html
+– addObserver:selector:name:object:
+notificationObserver 一个对象，作为observer，不能为空。
+notificationSelectorobserver接收到notificaiton后会调用的方法，该方法只能有一个参数，类似：- (void) mytest:(NSNotification*) notification
+notificationNamenotification的name，center只会像该observer发送指定name的notification
+notificationSender一个对象，作为sender，也就是说指定了只有改sender发送了name为上一个参数指定的notification，center才会向observer发送notification
+– removeObserver:
+notificationObserver 从center中删除observer，add方法调用后，要在合适的地方调用remove方法删除observer，否则如果多系调用add后，一个post会接收到多次notification
+– removeObserver:name:object:
+该方法与–addObserver:selector:name:object:结合起来使用
+Posting Notifications
+– postNotification:
+    NSNotification
+– postNotificationName:object:
+notificationNamenotification name
+notificationSender发送notification的object
+– postNotificationName:object:userInfo:
+notificationNamenotification name
+notificationSender发送notification的object
+userInfo伴随着notification发送过去的数据,是一个NSDictionary
+
+
+为何使用块代码?
+块代码是一个能工作的代码单元，可以在任何时候被执行。它们本质上是轻量级的，匿名的函数，并且可以作为函数的参数，或者返回值。块代码本身可能有一个参数列表，返回类型，或者没有返回值。你可以把块代码赋给一个变量，并在合适的时候调用它，就行调用一个普通函数一样。
+插入符(^)被用来做为块代码的开始标记。例如，下面的代码就声明了一个块块代码，它有两个整形的参数，返回类型也是整形。这里在第一个插入符后面列出参数列表，在一对大括号中包含实现代码，并且把这个快代码赋值给变量Multiply ：
+
+int (^Multiply)(int, int) = ^(int num1, int num2) {
+
+return num1 * num2;
+
+};
+
+int result = Multiply(7, 4); // result is 28
+作为函数或者方法的参数的时候，块代码其实就是一个回调类型的函数，可以使用在局限于函数或方法类型的代理上。作为参数传入后，在调用块代码，可以使得函数和方法可以实现个性化运行。当调用这些函数或方法的时候，它们会在合适的时候，执行这些块代码，去取的附加信息，或者执行特定的行为。
+使用块代码作为函数或方法的参数的一个好处就是，你可以在调用函数或方法的地方写回调代码。由于这些代码不需要在额外的函数或方法中，所以这样的实现方式简单易懂。使用通知中类NSNotification作为一个例子。在过去的模式下，一个对象把自己加入到一个通知的观察者对象中，它需要实现一个额外的函数(在调用addObserver:.. 函数的时候使用选择器作为参数传入)去处理这个消息：
+
+- (void)viewDidLoad {
+
+[super viewDidLoad];
+
+[[NSNotificationCenter defaultCenter] addObserver:self
+
+selector:@selector(keyboardWillShow:)
+
+name:UIKeyboardWillShowNotification object:nil];
+
+}
+
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+
+// Notification-handling code goes here.
+
+}
+在新的函数addObserverForName:object:queue:usingBlock:中，你可以替换通知的回调函数为下面的形式：
+
+- (void)viewDidLoad {
+
+[super viewDidLoad];
+
+[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification
+
+object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notif) {
+
+// Notification-handling code goes here.
+
+}];
+
+}
+使用块代码的另一个好处是，块代码可以共享本地作用域内有效的变量。如果你在一个函数中实现了一个块代码，这个块代码可以使用本地变量和函数参数（即栈上的变量）,还有在函数中能用包含实例变量等的全局变量。块代码在使用上述变量的时候是只读的，即不能修改这些变量，不过如果你使用__block来修饰变量，那么这个变量对于块代码就是可写的。即使方法或函数已经退出，本地环境已经释放，这些在块代码中使用的变量还存在，只要还有对这个块代码的引用存在。
+系统框架API中的块代码
+一个显著的使用块代码的动机是在系统类库中的函数越来越多的开始使用这个作为参数，下面是在部分系统函数中使用块代码的情况：
+结束回调
+通知处理
+出错处理
+枚举
+视图动画和翻转
+排序
+下面各节就是对上面的讨论。不过在开始讨论之前，我们还需要看一下系统函数中的块代码的声明。考虑下面的这个在类NSSet中的声明：
+
+- (NSSet *)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate
+上面的这个声明标示着传入函数的参数是一个动态对象类型和一个布尔类型，返回一个布尔类型的代码块。（传入参数和返回类型都是用在“Enumeration” 中的for循环的类型）。当声明你的块代码的时候，使用一个插入符^开始，并且使用一对括号包起来的参数列表，后面跟着被一对大括号包着的代码：
+
+[mySet objectsPassingTest:^(id obj, BOOL *stop) {
+
+// Code goes here; end by returning YES or NO.
+
+}];
+结束回调和错误管理
+结束处理是一个回调函数，用在当一个调用端使用系统函数或方法完成一个任务后的处理。很多时候调用端在结束回调中实现释放状态或者更新界面。很多框架方法函数使用块代码作为结束回调。
+UIView类中有很多个实现动画或视图翻转的函数使用块代码作为结束回调参数。(“View Animation and Transitions”对这些函数做出了描述)代码1-1演示了如何使用animateWithDuration:animations:completion:函数的例子。这个例子中的动画结束回调，在结束后使得做动画的视图回复原位，并且几秒后把alpha设置为1。
+代码1-1 一个结束回调块代码
+
+- (IBAction)animateView:(id)sender {
+    CGRect cacheFrame = self.imageView.frame;
+    [UIView animateWithDuration:1.5 animations:^{
+        CGRect newFrame = self.imageView.frame;
+        newFrame.origin.y = newFrame.origin.y + 150.0;
+        self.imageView.frame = newFrame;
+        self.imageView.alpha = 0.2;
+    }
+                     completion:^ (BOOL finished) {
+                         if (finished) {
+                             // Revert image view to original.
+                             sleep(3);
+                             self.imageView.frame = cacheFrame;
+                             self.imageView.alpha = 1.0;
+                         }
+                     }];
+}
+一些框架函数具有出错处理，这个和结束处理是一样的。函数会在默写错误发生的时候不能完成任务的情况下调用出错处理（并且传入一个NSError对象）。你可以自定义这个出错处理来通知用户有错误发生。
+通知管理
+NSNotificationCenter类中的方法addObserverForName:object:queue:usingBlock:让你在设置一个通知的观察者的时候就可以实现一个处理代码块。代码1-2演示了调用这个函数的情况，为某个通知定义一个通知管理的代码块。作为一个通知管理的函数，一个NSNotification对象被传入。这个函数还使用了一个NSOperationQueue实例，你的应用可以使用它来传递执行上下文到代码块中。
+Listing 1-2 Adding an object as an observer and handling a notification using a block
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+
+opQ = [[NSOperationQueue alloc] init];
+
+[[NSNotificationCenter defaultCenter] addObserverForName:@"CustomOperationCompleted"
+
+object:nil queue:opQ
+
+usingBlock:^(NSNotification *notif) {
+
+NSNumber *theNum = [notif.userInfo objectForKey:@"NumberOfItemsProcessed"];
+
+NSLog(@"Number of items processed: %i", [theNum intValue]);
+
+}];
+
+}
+枚举
+基础类库中的容器类—NSArray,NSDictionary,NSSet,和NSIndexSet—定义的可以实现枚举的函数，使用块代码作为参数，以便调用者可以个性化枚举动作。换句话说，这些方法提供了一个快速枚举的环境：
+
+for (id item in collection) {
+
+// Code to operate on each item in turn.
+
+}
+有两种类型枚举函数使用块代码。第一种是函数名称以enumerate开头并且没有返回值，这些函数使用块代码对没有被枚举的对象进行处理；第二种是以passingTest;结束的函数，这样函数返回一个整形或者NSIndexSet对象，这类函数中的代码块对每一个枚举对象进行测试，如果通过测试返回YES。函数返回的整形或者索引表示通过测试的原始位置或所有通过测试的对象的位置。
+代码1-3中对三个中没一个都调用NSArray中的方法。第一个方法（一个“passing test”方法）的块代码在数组中的每一个字符串对象如果含有一个固定的前缀就返回YES。后面的代码使用方法返回的索引创建一个临时的数组。第二个块代码把每一个第一个数组中的前缀去掉，把后面的加入到一个新数组中。
+代码1-3 使用两个块代码枚举数组
+
+NSString *area = @"Europe";
+
+NSArray *timeZoneNames = [NSTimeZone knownTimeZoneNames];
+
+NSMutableArray *areaArray = [NSMutableArray arrayWithCapacity:1];
+
+NSIndexSet *areaIndexes = [timeZoneNames indexesOfObjectsWithOptions:NSEnumerationConcurrent
+
+passingTest:^(id obj, NSUInteger idx, BOOL *stop) {
+
+NSString  *tmpStr = (NSString *)obj;
+
+return [tmpStr hasPrefix:area];
+
+}];
+
+
+NSArray *tmpArray = [timeZoneNames objectsAtIndexes:areaIndexes];
+
+[tmpArray enumerateObjectsWithOptions:NSEnumerationConcurrent|NSEnumerationReverse
+
+usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+
+[areaArray addObject:[obj substringFromIndex:[area length]+1]];
+
+}];
+
+NSLog(@"Cities in %@ time zone:%@", area, areaArray);
+上面的每一个枚举函数中的stop参数（这里没有使用）可以用来传入一个YES，在合适的时候停止枚举。你可以使用它在枚举到第一个你需要的项的时候停止。
+NSString类，尽管不是一个容器类，也提供两个使用块代码的函数，它们分别是enumerateSubstringsInRange:options:usingBlock: 和enumerateLinesUsingBlock:。第一个函数枚举一个字符串，使用一个子串进行分割，第二个只是使用换行符进行分割。代码1-4演示了第一个函数如何使用：
+代码1-4 使用块代码在一个字符串中查找匹配的子串
+
+NSString *musician = @"Beatles";
+
+NSString *musicDates = [NSString stringWithContentsOfFile:
+
+@"/usr/share/calendar/calendar.music"
+
+encoding:NSASCIIStringEncoding error:NULL];
+
+[musicDates enumerateSubstringsInRange:NSMakeRange(0, [musicDates length]-1)
+
+options:NSStringEnumerationByLines
+
+usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+
+NSRange found = [substring rangeOfString:musician];
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>Notification的工作机制
+1.对应用程序中其他地方发生的事件（比如增加一条数据库记录）感兴趣的对象，会向通告中心(Notification Center，NSNotificationCenter类的实例)注册，从而成为该事件的监听者。在注册过程中，监听者需要指定方法供通告中心在事件发生时调用。
+2.给数据库添加记录（或者类似事件）的对象给通告中心发一个通告（NSnotification的实例）。该通告对象包括识别通告的标志、发布通告的对象ID和可选的附加信息字典。
+3.通告中心发送消息到每个已注册的监听者，调用监听者指定的方法会将通告传给这些监听者。</p>
+
+<p>NSNotification对象
+NSNotification包含三个属性：
+name一个notification对象的name，由我们自己定义
+objectpost该notification的object，也就是sender
+userInfo伴随notification传递过去的数据，是一个NSDictionary</p>
+
+<p>NSNotificationCenter中的方法
+Getting the Notification Center
++ defaultCenter该方法用于获取当前程序中的center object
+Managing Notification Observers
+– addObserverForName:object:queue:usingBlock:
+对快代码的操作，详见：http://blog.sina.com.cn/s/blog_63ced45101016cih.html
+– addObserver:selector:name:object:
+notificationObserver 一个对象，作为observer，不能为空。
+notificationSelectorobserver接收到notificaiton后会调用的方法，该方法只能有一个参数，类似：- (void) mytest:(NSNotification*) notification
+notificationNamenotification的name，center只会像该observer发送指定name的notification
+notificationSender一个对象，作为sender，也就是说指定了只有改sender发送了name为上一个参数指定的notification，center才会向observer发送notification
+– removeObserver:
+notificationObserver 从center中删除observer，add方法调用后，要在合适的地方调用remove方法删除observer，否则如果多系调用add后，一个post会接收到多次notification
+– removeObserver:name:object:
+该方法与–addObserver:selector:name:object:结合起来使用
+Posting Notifications
+– postNotification:
+    NSNotification
+– postNotificationName:object:
+notificationNamenotification name
+notificationSender发送notification的object
+– postNotificationName:object:userInfo:
+notificationNamenotification name
+notificationSender发送notification的object
+userInfo伴随着notification发送过去的数据,是一个NSDictionary</p>
+
+<p>为何使用块代码?
+块代码是一个能工作的代码单元，可以在任何时候被执行。它们本质上是轻量级的，匿名的函数，并且可以作为函数的参数，或者返回值。块代码本身可能有一个参数列表，返回类型，或者没有返回值。你可以把块代码赋给一个变量，并在合适的时候调用它，就行调用一个普通函数一样。
+插入符(^)被用来做为块代码的开始标记。例如，下面的代码就声明了一个块块代码，它有两个整形的参数，返回类型也是整形。这里在第一个插入符后面列出参数列表，在一对大括号中包含实现代码，并且把这个快代码赋值给变量Multiply ：</p>
+
+<p>int (^Multiply)(int, int) = ^(int num1, int num2) {</p>
+
+<p>return num1 * num2;</p>
+
+<p>};</p>
+
+<p>int result = Multiply(7, 4); // result is 28
+作为函数或者方法的参数的时候，块代码其实就是一个回调类型的函数，可以使用在局限于函数或方法类型的代理上。作为参数传入后，在调用块代码，可以使得函数和方法可以实现个性化运行。当调用这些函数或方法的时候，它们会在合适的时候，执行这些块代码，去取的附加信息，或者执行特定的行为。
+使用块代码作为函数或方法的参数的一个好处就是，你可以在调用函数或方法的地方写回调代码。由于这些代码不需要在额外的函数或方法中，所以这样的实现方式简单易懂。使用通知中类NSNotification作为一个例子。在过去的模式下，一个对象把自己加入到一个通知的观察者对象中，它需要实现一个额外的函数(在调用addObserver:.. 函数的时候使用选择器作为参数传入)去处理这个消息：</p>
+
+<ul>
+<li>(void)viewDidLoad {</li>
+</ul>
+
+<p>[super viewDidLoad];</p>
+
+<p>[[NSNotificationCenter defaultCenter] addObserver:self</p>
+
+<p>selector:@selector(keyboardWillShow:)</p>
+
+<p>name:UIKeyboardWillShowNotification object:nil];</p>
+
+<p>}</p>
+
+<ul>
+<li>(void)keyboardWillShow:(NSNotification *)notification {</li>
+</ul>
+
+<p>// Notification-handling code goes here.</p>
+
+<p>}
+在新的函数addObserverForName:object:queue:usingBlock:中，你可以替换通知的回调函数为下面的形式：</p>
+
+<ul>
+<li>(void)viewDidLoad {</li>
+</ul>
+
+<p>[super viewDidLoad];</p>
+
+<p>[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillShowNotification</p>
+
+<p>object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *notif) {</p>
+
+<p>// Notification-handling code goes here.</p>
+
+<p>}];</p>
+
+<p>}
+使用块代码的另一个好处是，块代码可以共享本地作用域内有效的变量。如果你在一个函数中实现了一个块代码，这个块代码可以使用本地变量和函数参数（即栈上的变量）,还有在函数中能用包含实例变量等的全局变量。块代码在使用上述变量的时候是只读的，即不能修改这些变量，不过如果你使用__block来修饰变量，那么这个变量对于块代码就是可写的。即使方法或函数已经退出，本地环境已经释放，这些在块代码中使用的变量还存在，只要还有对这个块代码的引用存在。
+系统框架API中的块代码
+一个显著的使用块代码的动机是在系统类库中的函数越来越多的开始使用这个作为参数，下面是在部分系统函数中使用块代码的情况：
+结束回调
+通知处理
+出错处理
+枚举
+视图动画和翻转
+排序
+下面各节就是对上面的讨论。不过在开始讨论之前，我们还需要看一下系统函数中的块代码的声明。考虑下面的这个在类NSSet中的声明：</p>
+
+<ul>
+<li>(NSSet *)objectsPassingTest:(BOOL (^)(id obj, BOOL *stop))predicate
+上面的这个声明标示着传入函数的参数是一个动态对象类型和一个布尔类型，返回一个布尔类型的代码块。（传入参数和返回类型都是用在“Enumeration” 中的for循环的类型）。当声明你的块代码的时候，使用一个插入符^开始，并且使用一对括号包起来的参数列表，后面跟着被一对大括号包着的代码：</li>
+</ul>
+
+<p>[mySet objectsPassingTest:^(id obj, BOOL *stop) {</p>
+
+<p>// Code goes here; end by returning YES or NO.</p>
+
+<p>}];
+结束回调和错误管理
+结束处理是一个回调函数，用在当一个调用端使用系统函数或方法完成一个任务后的处理。很多时候调用端在结束回调中实现释放状态或者更新界面。很多框架方法函数使用块代码作为结束回调。
+UIView类中有很多个实现动画或视图翻转的函数使用块代码作为结束回调参数。(“View Animation and Transitions”对这些函数做出了描述)代码1-1演示了如何使用animateWithDuration:animations:completion:函数的例子。这个例子中的动画结束回调，在结束后使得做动画的视图回复原位，并且几秒后把alpha设置为1。
+代码1-1 一个结束回调块代码</p>
+
+<ul>
+<li><p>(IBAction)animateView:(id)sender {
+CGRect cacheFrame = self.imageView.frame;
+[UIView animateWithDuration:1.5 animations:^{
+    CGRect newFrame = self.imageView.frame;
+    newFrame.origin.y = newFrame.origin.y + 150.0;
+    self.imageView.frame = newFrame;
+    self.imageView.alpha = 0.2;
+}
+                 completion:^ (BOOL finished) {
+                     if (finished) {
+                         // Revert image view to original.
+                         sleep(3);
+                         self.imageView.frame = cacheFrame;
+                         self.imageView.alpha = 1.0;
+                     }
+                 }];
+}
+一些框架函数具有出错处理，这个和结束处理是一样的。函数会在默写错误发生的时候不能完成任务的情况下调用出错处理（并且传入一个NSError对象）。你可以自定义这个出错处理来通知用户有错误发生。
+通知管理
+NSNotificationCenter类中的方法addObserverForName:object:queue:usingBlock:让你在设置一个通知的观察者的时候就可以实现一个处理代码块。代码1-2演示了调用这个函数的情况，为某个通知定义一个通知管理的代码块。作为一个通知管理的函数，一个NSNotification对象被传入。这个函数还使用了一个NSOperationQueue实例，你的应用可以使用它来传递执行上下文到代码块中。
+Listing 1-2 Adding an object as an observer and handling a notification using a block</p></li>
+<li><p>(void)applicationDidFinishLaunching:(NSNotification *)aNotification {</p></li>
+</ul>
+
+<p>opQ = [[NSOperationQueue alloc] init];</p>
+
+<p>[[NSNotificationCenter defaultCenter] addObserverForName:@"CustomOperationCompleted"</p>
+
+<p>object:nil queue:opQ</p>
+
+<p>usingBlock:^(NSNotification *notif) {</p>
+
+<p>NSNumber *theNum = [notif.userInfo objectForKey:@"NumberOfItemsProcessed"];</p>
+
+<p>NSLog(@"Number of items processed: %i", [theNum intValue]);</p>
+
+<p>}];</p>
+
+<p>}
+枚举
+基础类库中的容器类—NSArray,NSDictionary,NSSet,和NSIndexSet—定义的可以实现枚举的函数，使用块代码作为参数，以便调用者可以个性化枚举动作。换句话说，这些方法提供了一个快速枚举的环境：</p>
+
+<p>for (id item in collection) {</p>
+
+<p>// Code to operate on each item in turn.</p>
+
+<p>}
+有两种类型枚举函数使用块代码。第一种是函数名称以enumerate开头并且没有返回值，这些函数使用块代码对没有被枚举的对象进行处理；第二种是以passingTest;结束的函数，这样函数返回一个整形或者NSIndexSet对象，这类函数中的代码块对每一个枚举对象进行测试，如果通过测试返回YES。函数返回的整形或者索引表示通过测试的原始位置或所有通过测试的对象的位置。
+代码1-3中对三个中没一个都调用NSArray中的方法。第一个方法（一个“passing test”方法）的块代码在数组中的每一个字符串对象如果含有一个固定的前缀就返回YES。后面的代码使用方法返回的索引创建一个临时的数组。第二个块代码把每一个第一个数组中的前缀去掉，把后面的加入到一个新数组中。
+代码1-3 使用两个块代码枚举数组</p>
+
+<p>NSString *area = @"Europe";</p>
+
+<p>NSArray *timeZoneNames = [NSTimeZone knownTimeZoneNames];</p>
+
+<p>NSMutableArray *areaArray = [NSMutableArray arrayWithCapacity:1];</p>
+
+<p>NSIndexSet *areaIndexes = [timeZoneNames indexesOfObjectsWithOptions:NSEnumerationConcurrent</p>
+
+<p>passingTest:^(id obj, NSUInteger idx, BOOL *stop) {</p>
+
+<p>NSString  *tmpStr = (NSString *)obj;</p>
+
+<p>return [tmpStr hasPrefix:area];</p>
+
+<p>}];</p>
+
+<p>NSArray *tmpArray = [timeZoneNames objectsAtIndexes:areaIndexes];</p>
+
+<p>[tmpArray enumerateObjectsWithOptions:NSEnumerationConcurrent|NSEnumerationReverse</p>
+
+<p>usingBlock:^(id obj, NSUInteger idx, BOOL *stop) {</p>
+
+<p>[areaArray addObject:[obj substringFromIndex:[area length]+1]];</p>
+
+<p>}];</p>
+
+<p>NSLog(@"Cities in %@ time zone:%@", area, areaArray);
+上面的每一个枚举函数中的stop参数（这里没有使用）可以用来传入一个YES，在合适的时候停止枚举。你可以使用它在枚举到第一个你需要的项的时候停止。
+NSString类，尽管不是一个容器类，也提供两个使用块代码的函数，它们分别是enumerateSubstringsInRange:options:usingBlock: 和enumerateLinesUsingBlock:。第一个函数枚举一个字符串，使用一个子串进行分割，第二个只是使用换行符进行分割。代码1-4演示了第一个函数如何使用：
+代码1-4 使用块代码在一个字符串中查找匹配的子串</p>
+
+<p>NSString *musician = @"Beatles";</p>
+
+<p>NSString *musicDates = [NSString stringWithContentsOfFile:</p>
+
+<p>@"/usr/share/calendar/calendar.music"</p>
+
+<p>encoding:NSASCIIStringEncoding error:NULL];</p>
+
+<p>[musicDates enumerateSubstringsInRange:NSMakeRange(0, [musicDates length]-1)</p>
+
+<p>options:NSStringEnumerationByLines</p>
+
+<p>usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {</p>
+
+<p>NSRange found = [substring rangeOfString:musician];</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "NSNotificationCenter.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
