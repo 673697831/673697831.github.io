@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+1.在定义类别之前, 引入runtime.
+#import <objc/runtime.h>
+
+2.定义&实现类别(以UIView为例)
+定义:
+@interface UIView(AddVariables)
+
+@property (nonatomic, retain) NSString *viewName;
+
+@end
+
+实现:
+// 定义存取的Key
+static const char *viewNameKey = "viewNameKey";
+
+@implementation UIView(AddVariables)
+
+// get方法
+- (NSString *)viewName {
+    return (NSString *)objc_getAssociatedObject(self, viewNameKey);
+}
+// set方法
+- (void)setViewName:(NSString *)newViewNameKey {
+    objc_setAssociatedObject(self, viewNameKey, newViewNameKey, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+@end
+
+3.调用测试:
+- (void)viewDidLoad {
+
+    UIView *testView = [[UIView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:testView];
+    [testView release];
+
+    [testView setViewName:@"Nori's View"];
+    NSLog(@"[testView's newPropery]:%@", testView.viewName);
+
+    [super viewDidLoad];
+}
+
+
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>1.在定义类别之前, 引入runtime.</p>
+
+<h1 id="importobjcruntimeh">import <objc runtime.h=""></objc></h1>
+
+<p>2.定义&amp;实现类别(以UIView为例)
+定义:
+@interface UIView(AddVariables)</p>
+
+<p>@property (nonatomic, retain) NSString *viewName;</p>
+
+<p>@end</p>
+
+<p>实现:
+// 定义存取的Key
+static const char *viewNameKey = "viewNameKey";</p>
+
+<p>@implementation UIView(AddVariables)</p>
+
+<p>// get方法
+- (NSString *)viewName {
+    return (NSString *)objc<em>getAssociatedObject(self, viewNameKey);
+}
+// set方法
+- (void)setViewName:(NSString *)newViewNameKey {
+    objc</em>setAssociatedObject(self, viewNameKey, newViewNameKey, OBJC<em>ASSOCIATION</em>RETAIN_NONATOMIC);
+}</p>
+
+<p>@end</p>
+
+<p>3.调用测试:
+- (void)viewDidLoad {</p>
+
+<pre><code>UIView *testView = [[UIView alloc] initWithFrame:self.view.bounds];
+[self.view addSubview:testView];
+[testView release];
+
+[testView setViewName:@"Nori's View"];
+NSLog(@"[testView's newPropery]:%@", testView.viewName);
+
+[super viewDidLoad];
+</code></pre>
+
+<p>}</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "associative.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
