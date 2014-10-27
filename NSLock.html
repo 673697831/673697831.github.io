@@ -1,0 +1,410 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+Object-C 多线程中锁的使用-NSLock
+
+一、使用synchronized方式
+
+    //线程1
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        @synchronized(_myLockObj){
+            [obj1 method1];
+            sleep(30);
+        }
+        @synchronized(obj1){
+
+        
+        
+        }
+    });
+    
+    //线程2
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        sleep(1);
+        @synchronized(_myLockObj){
+            [obj1 method2];
+        }
+    });
+    
+}
+
+这样，就会起到锁的作用，线程2会等待线程1执行完成@synchronized(obj){}块后，在执行。从而起到锁的作用。
+
+2.使用NSLock方式
+
+先贴一个例子：
+
+1. TestObj.h
+
+@interface TestObj : NSObject
+- (void)method1;
+- (void)method2;
+@end
+
+2. TestObj.m
+
+#import "TestObj.h"
+
+@implementation TestObj
+
+- (void)method1{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSLog(@"Current thread = %@", [NSThread currentThread]);
+    NSLog(@"Main thread = %@", [NSThread mainThread]);
+}
+
+- (void)method2{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    NSLog(@"Current thread = %@", [NSThread currentThread]);
+    NSLog(@"Main thread = %@", [NSThread mainThread]);
+    
+}
+
+@end
+
+3.在需要锁的视图控制器中，申明锁对象。
+
+ TestObj *obj = [[TestObj alloc] init];
+    NSLock *lock = [[NSLock alloc] init];
+
+4.多线程状态下，锁操作
+
+ 
+//线程1
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [lock lock];
+        [obj method1];
+        sleep(30);
+        [lock unlock];
+    });
+    
+    //线程2
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        sleep(5);//以保证让线程2的代码后执行
+        [lock lock];
+        [obj method2];
+        [lock unlock];
+    });
+
+5.总结
+
+使用时，基本方法就是：
+[lock lock];
+[obj yourMethod];
+[lock unlock];
+
+我们称[obj yourMethod]为“关键部分”。
+NSLock的执行原理：
+某个线程A调用lock方法。这样，NSLock将被上锁。可以执行“关键部分”，完成后，调用unlock方法。
+如果，在线程A 调用unlock方法之前，另一个线程B调用了同一锁对象的lock方法。那么，线程B只有等待。直到线程A调用了unlock。
+
+最后，还是看看API中对NSLock的一些说明
+
+ 
+@protocol NSLocking 
+
+ 
+lock 方法
+- (void)lock
+获得锁
+
+unlock 方法
+- (void)unlock
+释放锁
+
+@interface NSLock
+
+lockBeforeDate: 方法
+- (BOOL)lockBeforeDate:(NSDate *)limit
+在指定的时间以前得到锁。YES:在指定时间之前获得了锁；NO：在指定时间之前没有获得锁。
+该线程将被阻塞，直到获得了锁，或者指定时间过期。
+
+
+tryLock 方法
+- (BOOL)tryLock
+视图得到一个锁。YES：成功得到锁；NO：没有得到锁。
+
+
+setName: 方法
+- (void)setName:(NSString *)newName
+为锁指定一个Name
+
+name 方法
+- (NSString *)name
+返回锁指定的Name
+
+
+三、使用GCD中dispatch_semaphore_t和dispatch_semaphore_wait
+
+TestObj *obj = [[TestObj alloc] init];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+    
+    //线程1
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        [obj method1];
+        sleep(10);
+        dispatch_semaphore_signal(semaphore);
+    });
+    
+    //线程2
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        sleep(1);
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        [obj method2];
+        dispatch_semaphore_signal(semaphore);
+    });
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>Object-C 多线程中锁的使用-NSLock</p>
+
+<p>一、使用synchronized方式</p>
+
+<pre><code>//线程1
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    @synchronized(_myLockObj){
+        [obj1 method1];
+        sleep(30);
+    }
+    @synchronized(obj1){
+
+
+
+    }
+});
+
+//线程2
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    sleep(1);
+    @synchronized(_myLockObj){
+        [obj1 method2];
+    }
+});
+</code></pre>
+
+<p>}</p>
+
+<p>这样，就会起到锁的作用，线程2会等待线程1执行完成@synchronized(obj){}块后，在执行。从而起到锁的作用。</p>
+
+<p>2.使用NSLock方式</p>
+
+<p>先贴一个例子：</p>
+
+<ol>
+<li>TestObj.h</li>
+</ol>
+
+<p>@interface TestObj : NSObject
+- (void)method1;
+- (void)method2;
+@end</p>
+
+<ol>
+<li>TestObj.m</li>
+</ol>
+
+<h1 id="importtestobjh">import "TestObj.h"</h1>
+
+<p>@implementation TestObj</p>
+
+<ul>
+<li><p>(void)method1{
+NSLog(@"%@",NSStringFromSelector(_cmd));
+NSLog(@"Current thread = %@", [NSThread currentThread]);
+NSLog(@"Main thread = %@", [NSThread mainThread]);
+}</p></li>
+<li><p>(void)method2{
+NSLog(@"%@",NSStringFromSelector(_cmd));
+NSLog(@"Current thread = %@", [NSThread currentThread]);
+NSLog(@"Main thread = %@", [NSThread mainThread]);</p></li>
+</ul>
+
+<p>}</p>
+
+<p>@end</p>
+
+<p>3.在需要锁的视图控制器中，申明锁对象。</p>
+
+<p>TestObj *obj = [[TestObj alloc] init];
+    NSLock *lock = [[NSLock alloc] init];</p>
+
+<p>4.多线程状态下，锁操作</p>
+
+<p>//线程1
+    dispatch<em>async(dispatch</em>get<em>global</em>queue(DISPATCH<em>QUEUE</em>PRIORITY_DEFAULT, 0), ^{
+        [lock lock];
+        [obj method1];
+        sleep(30);
+        [lock unlock];
+    });</p>
+
+<pre><code>//线程2
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    sleep(5);//以保证让线程2的代码后执行
+    [lock lock];
+    [obj method2];
+    [lock unlock];
+});
+</code></pre>
+
+<p>5.总结</p>
+
+<p>使用时，基本方法就是：
+[lock lock];
+[obj yourMethod];
+[lock unlock];</p>
+
+<p>我们称[obj yourMethod]为“关键部分”。
+NSLock的执行原理：
+某个线程A调用lock方法。这样，NSLock将被上锁。可以执行“关键部分”，完成后，调用unlock方法。
+如果，在线程A 调用unlock方法之前，另一个线程B调用了同一锁对象的lock方法。那么，线程B只有等待。直到线程A调用了unlock。</p>
+
+<p>最后，还是看看API中对NSLock的一些说明</p>
+
+<p>@protocol NSLocking </p>
+
+<p>lock 方法
+- (void)lock
+获得锁</p>
+
+<p>unlock 方法
+- (void)unlock
+释放锁</p>
+
+<p>@interface NSLock</p>
+
+<p>lockBeforeDate: 方法
+- (BOOL)lockBeforeDate:(NSDate *)limit
+在指定的时间以前得到锁。YES:在指定时间之前获得了锁；NO：在指定时间之前没有获得锁。
+该线程将被阻塞，直到获得了锁，或者指定时间过期。</p>
+
+<p>tryLock 方法
+- (BOOL)tryLock
+视图得到一个锁。YES：成功得到锁；NO：没有得到锁。</p>
+
+<p>setName: 方法
+- (void)setName:(NSString *)newName
+为锁指定一个Name</p>
+
+<p>name 方法
+- (NSString *)name
+返回锁指定的Name</p>
+
+<p>三、使用GCD中dispatch<em>semaphore</em>t和dispatch<em>semaphore</em>wait</p>
+
+<p>TestObj *obj = [[TestObj alloc] init];
+    dispatch<em>semaphore</em>t semaphore = dispatch<em>semaphore</em>create(1);</p>
+
+<pre><code>//线程1
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [obj method1];
+    sleep(10);
+    dispatch_semaphore_signal(semaphore);
+});
+
+//线程2
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    sleep(1);
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    [obj method2];
+    dispatch_semaphore_signal(semaphore);
+});
+</code></pre>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "NSLock.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
