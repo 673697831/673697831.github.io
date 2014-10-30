@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+ NSSet到底什么类型，其实它和NSArray功能性质一样，用于存储对象，属于集合； NSSet  ， NSMutableSet类声明编程接口对象，无序的集合，在内存中存储方式是不连续的，不像NSArray，NSDictionary（都是有序的集合）类声明编程接口对象是有序集合，在内存中存储位置是连续的；
+
+        NSSet和我们常用NSArry区别是：在搜索一个一个元素时NSSet比NSArray效率高，主要是它用到了一个算法hash(散列，也可直译为哈希)；开发文档中这样解释：You can use sets as an alternative to arrays when the order of elements isn’t important and performance in testing whether an object is contained in the set is a consideration—while arrays are ordered, testing for membership is slower than with sets.
+比如你要存储元素A，一个hash算法直接就能直接找到A应该存储的位置；同样，当你要访问A时，一个hash过程就能找到A存储的位置。而对于NSArray，若想知道A到底在不在数组中，则需要便利整个数组，显然效率较低了；
+
+       NSSet，NSArray都是类，只能添加cocoa对象，如果需要加入基本数据类型（int，float，BOOL，double等），需要将数据封装成NSNumber类型。
+
+NSSet 常用方法总结
++(id)setWithObjects:obj1,obj2,...nil	使用一组对象创建新的集合
+-(id)initWithObjects:obj1,obj2,....nil	使用一组对象初始化新分配的集合
+-(NSUInteger)count	返回集合成员个数
+-(BOOL)containsObject:obj	确定集合是否包含对象 obj
+-(BOOL)member:obj	确定集合是否包含对象 obj
+-(NSEnumerator*)objectEnumerator	返回集合中所有对象到一个 NSEnumerator 类型的对象
+-(BOOL)isSubsetOfSet:nsset	判断集合是否是NSSet的子集
+-(BOOL)intersectsSet:nsset	判断两个集合的交集是否至少存在一个元素
+-(BOOL)isEqualToSet:nsset	判断两个集合是否相等
+
+
+NSMutableSet 常用方法总结
+-(id)setWithCapcity:size	创建一个有size大小的新集合
+-(id)initWithCapcity:size	初始化一个新分配的集合，大小为size
+-(void)addObject:obj	添加对象 obj 到集合中
+-(void)removeobject:obj	从集合中删除对象 obj
+-(void)removeAllObjects	删除集合中所有对象
+-(void)unionSet:nsset	将nsset的所有元素添加到集合
+-(void)minusSet:nsset	从集合中去掉所有的NSSet 的元素
+-(void)interectSet:nsset	集合和NSSet 做交集运算
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>NSSet到底什么类型，其实它和NSArray功能性质一样，用于存储对象，属于集合； NSSet  ， NSMutableSet类声明编程接口对象，无序的集合，在内存中存储方式是不连续的，不像NSArray，NSDictionary（都是有序的集合）类声明编程接口对象是有序集合，在内存中存储位置是连续的；</p>
+
+<pre><code>    NSSet和我们常用NSArry区别是：在搜索一个一个元素时NSSet比NSArray效率高，主要是它用到了一个算法hash(散列，也可直译为哈希)；开发文档中这样解释：You can use sets as an alternative to arrays when the order of elements isn’t important and performance in testing whether an object is contained in the set is a consideration—while arrays are ordered, testing for membership is slower than with sets.
+</code></pre>
+
+<p>比如你要存储元素A，一个hash算法直接就能直接找到A应该存储的位置；同样，当你要访问A时，一个hash过程就能找到A存储的位置。而对于NSArray，若想知道A到底在不在数组中，则需要便利整个数组，显然效率较低了；</p>
+
+<pre><code>   NSSet，NSArray都是类，只能添加cocoa对象，如果需要加入基本数据类型（int，float，BOOL，double等），需要将数据封装成NSNumber类型。
+</code></pre>
+
+<p>NSSet 常用方法总结
++(id)setWithObjects:obj1,obj2,...nil    使用一组对象创建新的集合
+-(id)initWithObjects:obj1,obj2,....nil    使用一组对象初始化新分配的集合
+-(NSUInteger)count    返回集合成员个数
+-(BOOL)containsObject:obj    确定集合是否包含对象 obj
+-(BOOL)member:obj    确定集合是否包含对象 obj
+-(NSEnumerator*)objectEnumerator    返回集合中所有对象到一个 NSEnumerator 类型的对象
+-(BOOL)isSubsetOfSet:nsset    判断集合是否是NSSet的子集
+-(BOOL)intersectsSet:nsset    判断两个集合的交集是否至少存在一个元素
+-(BOOL)isEqualToSet:nsset    判断两个集合是否相等</p>
+
+<p>NSMutableSet 常用方法总结
+-(id)setWithCapcity:size    创建一个有size大小的新集合
+-(id)initWithCapcity:size    初始化一个新分配的集合，大小为size
+-(void)addObject:obj    添加对象 obj 到集合中
+-(void)removeobject:obj    从集合中删除对象 obj
+-(void)removeAllObjects    删除集合中所有对象
+-(void)unionSet:nsset    将nsset的所有元素添加到集合
+-(void)minusSet:nsset    从集合中去掉所有的NSSet 的元素
+-(void)interectSet:nsset    集合和NSSet 做交集运算</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "NSSet.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
