@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+ios 开发中使用内联函数
+
+定义：
+     有函数的结构，但不具备函数的性质，类似于宏替换。代码中使用inline定义，能否形成内联函数，还要看编译器对内联函数体内部的定义的具体处理。
+
+产生的动机：
+     消除函数调用产生的开销，适合与小内存函数，频繁执行的函数。
+
+注意事项：
+    不能使用循环语句；不能使用开关语句；不能使用递归调用；定义在第一次调用之前；
+
+结合使用的问题：
+   static inline fun_returnType  Fun_name(param...){}
+   static 标识此内联联函数只能在本文件中使用，限制了内联函数的作用域。相对于宏来说，static inline具有和宏同样级别的开销，而且还提供了类型安全，没有长度和格式的具体限制。
+
+inline的核心思想是通过替换消除函数调用的开销。所谓替换是指，用函数本体替换每一处对此函数的调用。函数调用的开销是指，每一次函数调用，程序都需要保存当前函数的现场，例如保存所有寄存器的值，每次函数返回都需要恢复现场，这个现场的保存和恢复属于函数调用的开销。
+
+        如果一个函数被inline化，意味着此函数不会被调用，那么此函数在编译时将不会出现在符号表中，这样意味着此函数没有地址，即不能试图以地址的方式操作此函数。
+
+        inline的优势，通过函数替换省去了函数调用的开销，代码执行变快。
+
+        inline的副作用，由于inline会用函数本体替换每一处对此函数的调用，那么程序编译后的体积会变大。
+
+        是否使用inline，在一定程度上是一个权衡问题，即在时间和空间之间选择，使用inline代码执行效率高，但占用空间大。
+
+        是否使用inline，还有别的因素需要考虑。例如对库函数的设计，例如调试。
+
+第一，库设计者必须评估声明函数为 inline 的影响，因为为库中的客户可见的 inline 函数提供二进制升级版本是不可能的。换句话说，如果 f 是一个库中的一个 inline 函数，库的客户将函数 f 的本体编译到他们的应用程序中。如果一个库的实现者后来决定修改 f，所有使用了 f 的客户都必须重新编译。这常常会令人厌烦。在另一方面，如果 f 是一个非 inline 函数，对 f 的改变只需要客户重新连接。这与重新编译相比显然减轻了很大的负担，而且，如果库中包含的函数是动态链接的，这就是一种对于用户来说完全透明的方法。
+
+                第二，从编码期间的实用观点来看，占有支配地位的事实是：大多数调试器会与 inline 函数发生冲突。这不应该是什么重大的发现。你怎么能在一个不在那里的函数中设置断点呢？虽然一些构建环境设法支持 inline 函数的调试，多数环境还是简单地为调试构建取消了 inline 化。
+
+        inline能否如期望的那样起作用。需要注意的是，inline只是向编译器发出的一个请求，而不是一个命令。
+
+                第一，虚拟函数不会被inline，虚拟意味着“等待，直到运行时才能断定哪一个函数被调用”，而 inline 意味着“执行之前，用被调用函数取代调用的地方”。如果编译器不知道哪一个函数将被调用，你很难责备它们拒绝 inline 化这个函数本体。
+
+　　        第二，有时候，即使当编译器完全心甘情愿地 inline 化一个函数，他们还是会为这个 inline 函数生成函数本体。例如，如果你的程序要持有一个 inline 函数的地址，编译器必须为它生成一个 outlined 函数本体，这样这个函数才有地址，编译器怎么能生成一个指向根本不存在的函数的指针呢！另外，对一个 inline 函数的调用可能被也可能不被 inline 化，依赖于这个调用是如何做成的，如下实例：
+
+inline使用的原则
+
+        第一，由经验确定的 80-20 规则，宣称一个典型的程序用 80% 的时间执行 20% 的代码。这是一个重要的规则，因为它提醒你作为一个软件开发者的目标是识别出能全面提升你的程序性能的 20% 的代码。你可以 inline 或者用其他方式无限期地调节你的函数，但除非你将精力集中在正确的函数上，否则就是白白浪费精力。
+
+        第二，将大部分 inline 限制在小的，调用频繁的函数上。这使得程序调试和二进制升级更加容易，最小化潜在的代码膨胀，并最大化提高程序速度的几率。
+
+        注意：如果一个 inline 函数本体很短，为函数本体生成的代码可能比为一个函数调用生成的代码还要小。如果是这种情况，inline 化这个函数可以实际上导致更小的目标代码和更高的指令缓存命中率！
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>ios 开发中使用内联函数</p>
+
+<p>定义：
+     有函数的结构，但不具备函数的性质，类似于宏替换。代码中使用inline定义，能否形成内联函数，还要看编译器对内联函数体内部的定义的具体处理。</p>
+
+<p>产生的动机：
+     消除函数调用产生的开销，适合与小内存函数，频繁执行的函数。</p>
+
+<p>注意事项：
+    不能使用循环语句；不能使用开关语句；不能使用递归调用；定义在第一次调用之前；</p>
+
+<p>结合使用的问题：
+   static inline fun<em>returnType  Fun</em>name(param...){}
+   static 标识此内联联函数只能在本文件中使用，限制了内联函数的作用域。相对于宏来说，static inline具有和宏同样级别的开销，而且还提供了类型安全，没有长度和格式的具体限制。</p>
+
+<p>inline的核心思想是通过替换消除函数调用的开销。所谓替换是指，用函数本体替换每一处对此函数的调用。函数调用的开销是指，每一次函数调用，程序都需要保存当前函数的现场，例如保存所有寄存器的值，每次函数返回都需要恢复现场，这个现场的保存和恢复属于函数调用的开销。</p>
+
+<pre><code>    如果一个函数被inline化，意味着此函数不会被调用，那么此函数在编译时将不会出现在符号表中，这样意味着此函数没有地址，即不能试图以地址的方式操作此函数。
+
+    inline的优势，通过函数替换省去了函数调用的开销，代码执行变快。
+
+    inline的副作用，由于inline会用函数本体替换每一处对此函数的调用，那么程序编译后的体积会变大。
+
+    是否使用inline，在一定程度上是一个权衡问题，即在时间和空间之间选择，使用inline代码执行效率高，但占用空间大。
+
+    是否使用inline，还有别的因素需要考虑。例如对库函数的设计，例如调试。
+</code></pre>
+
+<p>第一，库设计者必须评估声明函数为 inline 的影响，因为为库中的客户可见的 inline 函数提供二进制升级版本是不可能的。换句话说，如果 f 是一个库中的一个 inline 函数，库的客户将函数 f 的本体编译到他们的应用程序中。如果一个库的实现者后来决定修改 f，所有使用了 f 的客户都必须重新编译。这常常会令人厌烦。在另一方面，如果 f 是一个非 inline 函数，对 f 的改变只需要客户重新连接。这与重新编译相比显然减轻了很大的负担，而且，如果库中包含的函数是动态链接的，这就是一种对于用户来说完全透明的方法。</p>
+
+<pre><code>            第二，从编码期间的实用观点来看，占有支配地位的事实是：大多数调试器会与 inline 函数发生冲突。这不应该是什么重大的发现。你怎么能在一个不在那里的函数中设置断点呢？虽然一些构建环境设法支持 inline 函数的调试，多数环境还是简单地为调试构建取消了 inline 化。
+
+    inline能否如期望的那样起作用。需要注意的是，inline只是向编译器发出的一个请求，而不是一个命令。
+
+            第一，虚拟函数不会被inline，虚拟意味着“等待，直到运行时才能断定哪一个函数被调用”，而 inline 意味着“执行之前，用被调用函数取代调用的地方”。如果编译器不知道哪一个函数将被调用，你很难责备它们拒绝 inline 化这个函数本体。
+</code></pre>
+
+<p>　　        第二，有时候，即使当编译器完全心甘情愿地 inline 化一个函数，他们还是会为这个 inline 函数生成函数本体。例如，如果你的程序要持有一个 inline 函数的地址，编译器必须为它生成一个 outlined 函数本体，这样这个函数才有地址，编译器怎么能生成一个指向根本不存在的函数的指针呢！另外，对一个 inline 函数的调用可能被也可能不被 inline 化，依赖于这个调用是如何做成的，如下实例：</p>
+
+<p>inline使用的原则</p>
+
+<pre><code>    第一，由经验确定的 80-20 规则，宣称一个典型的程序用 80% 的时间执行 20% 的代码。这是一个重要的规则，因为它提醒你作为一个软件开发者的目标是识别出能全面提升你的程序性能的 20% 的代码。你可以 inline 或者用其他方式无限期地调节你的函数，但除非你将精力集中在正确的函数上，否则就是白白浪费精力。
+
+    第二，将大部分 inline 限制在小的，调用频繁的函数上。这使得程序调试和二进制升级更加容易，最小化潜在的代码膨胀，并最大化提高程序速度的几率。
+
+    注意：如果一个 inline 函数本体很短，为函数本体生成的代码可能比为一个函数调用生成的代码还要小。如果是这种情况，inline 化这个函数可以实际上导致更小的目标代码和更高的指令缓存命中率！
+</code></pre>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "inline.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
