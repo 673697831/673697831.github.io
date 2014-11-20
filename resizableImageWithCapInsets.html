@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+iOS图片拉伸技巧—— resizableImageWithCapInsets
+
+http://blog.csdn.net/chaoyuan899/article/details/19811889
+
+一、iOS 5.0之前
+iOS中有个叫端盖(end cap)的概念，用来指定图片中的哪一部分不用拉伸。比如下图中，黑色代表需要被拉伸的矩形区域，上下左右不需要被拉伸的边缘就称为端盖。
+
+二、iOS 5.0
+在iOS 5.0中，UIImage又有一个新方法可以处理图片的拉伸问题
+CGFloat top = 25; // 顶端盖高度  
+CGFloat bottom = 25 ; // 底端盖高度  
+CGFloat left = 10; // 左端盖宽度  
+CGFloat right = 10; // 右端盖宽度  
+UIEdgeInsets insets = UIEdgeInsetsMake(top, left, bottom, right);  
+// 伸缩后重新赋值  
+image = [image resizableImageWithCapInsets:insets]; 
+
+三、iOS 6.0
+在iOS6.0中，UIImage又提供了一个方法处理图片拉伸
+
+UIImageResizingModeStretch：拉伸模式，通过拉伸UIEdgeInsets指定的矩形区域来填充图片
+UIImageResizingModeTile：平铺模式，通过重复显示UIEdgeInsets指定的矩形区域来填充图片
+[java] view plaincopy 
+CGFloat top = 25; // 顶端盖高度  
+CGFloat bottom = 25 ; // 底端盖高度  
+CGFloat left = 10; // 左端盖宽度  
+CGFloat right = 10; // 右端盖宽度  
+UIEdgeInsets insets = UIEdgeInsetsMake(top, left, bottom, right);  
+// 指定为拉伸模式，伸缩后重新赋值  
+image = [image resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];  
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>iOS图片拉伸技巧—— resizableImageWithCapInsets</p>
+
+<p>http://blog.csdn.net/chaoyuan899/article/details/19811889</p>
+
+<p>一、iOS 5.0之前
+iOS中有个叫端盖(end cap)的概念，用来指定图片中的哪一部分不用拉伸。比如下图中，黑色代表需要被拉伸的矩形区域，上下左右不需要被拉伸的边缘就称为端盖。</p>
+
+<p>二、iOS 5.0
+在iOS 5.0中，UIImage又有一个新方法可以处理图片的拉伸问题
+CGFloat top = 25; // 顶端盖高度 <br>
+CGFloat bottom = 25 ; // 底端盖高度 <br>
+CGFloat left = 10; // 左端盖宽度 <br>
+CGFloat right = 10; // 右端盖宽度 <br>
+UIEdgeInsets insets = UIEdgeInsetsMake(top, left, bottom, right); <br>
+// 伸缩后重新赋值 <br>
+image = [image resizableImageWithCapInsets:insets]; </p>
+
+<p>三、iOS 6.0
+在iOS6.0中，UIImage又提供了一个方法处理图片拉伸</p>
+
+<p>UIImageResizingModeStretch：拉伸模式，通过拉伸UIEdgeInsets指定的矩形区域来填充图片
+UIImageResizingModeTile：平铺模式，通过重复显示UIEdgeInsets指定的矩形区域来填充图片
+[java] view plaincopy 
+CGFloat top = 25; // 顶端盖高度 <br>
+CGFloat bottom = 25 ; // 底端盖高度 <br>
+CGFloat left = 10; // 左端盖宽度 <br>
+CGFloat right = 10; // 右端盖宽度 <br>
+UIEdgeInsets insets = UIEdgeInsetsMake(top, left, bottom, right); <br>
+// 指定为拉伸模式，伸缩后重新赋值 <br>
+image = [image resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];  </p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "resizableImageWithCapInsets.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
