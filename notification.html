@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+1.Apple id
+选择Push Notifications	Enabled
+上传秘钥  keychain acccess -> certificate assistant ->request a certificate from a certificate authortiry
+ca email address 空
+选saved to disk
+
+2.Provisioning Profiles
+对应设备选择刚才的apple id 对应的name
+
+3.在xcode中安装Profiles(xcode5 organizer, xcode6 devices)
+
+代码实现
+1.application:didFinishLaunchingWithOptions:中注册
+float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+    NSLog(@"%f",version);
+    
+    //ios8
+    if (version >= 8) {
+        //1.创建消息上面要添加的动作(按钮的形式显示出来)
+        UIMutableUserNotificationAction *action = [[UIMutableUserNotificationAction alloc] init];
+        action.identifier = @"action";//按钮的标示
+        action.title=@"Accept";//按钮的标题
+        action.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
+        //    action.authenticationRequired = YES;
+        //    action.destructive = YES;
+        
+        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];
+        action2.identifier = @"action2";
+        action2.title=@"Reject";
+        action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
+        action.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+        action.destructive = YES;
+        
+        //2.创建动作(按钮)的类别集合
+        UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
+        categorys.identifier = @"alert";//这组动作的唯一标示,推送通知的时候也是根据这个来区分
+        [categorys setActions:@[action,action2] forContext:(UIUserNotificationActionContextMinimal)];
+        
+        //3.创建UIUserNotificationSettings，并设置消息的显示类类型
+        UIUserNotificationSettings *notiSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:[NSSet setWithObjects:categorys, nil]];
+        [application registerUserNotificationSettings:notiSettings];
+        
+    }else{
+        [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound];
+    }
+
+2.
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    [application registerForRemoteNotifications];
+}
+
+3.deviceToken
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NSString *token=[NSString stringWithFormat:@"%@",deviceToken];
+    token=[token stringByReplacingOccurrencesOfString:@"<" withString:@""];
+    token=[token stringByReplacingOccurrencesOfString:@">" withString:@""];
+    token=[token stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+}
+
+4.注册失败
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    NSLog(@"注册失败，无法获取设备ID, 具体错误: %@", error);
+}
+
+5.推送返回
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"userInfo == %@",userInfo);
+    
+    NSString *message = [[userInfo objectForKey:@"aps"]objectForKey:@"alert"];
+    
+    UIAlertView *createUserResponseAlert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                                      message:message
+                                                                     delegate:self
+                                                            cancelButtonTitle:@"取消"
+                                                            otherButtonTitles: @"确认", nil];
+    
+    [createUserResponseAlert show];
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+
+}
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>1.Apple id
+选择Push Notifications    Enabled
+上传秘钥  keychain acccess -&gt; certificate assistant -&gt;request a certificate from a certificate authortiry
+ca email address 空
+选saved to disk</p>
+
+<p>2.Provisioning Profiles
+对应设备选择刚才的apple id 对应的name</p>
+
+<p>3.在xcode中安装Profiles(xcode5 organizer, xcode6 devices)</p>
+
+<p>代码实现
+1.application:didFinishLaunchingWithOptions:中注册
+float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+    NSLog(@"%f",version);</p>
+
+<pre><code>//ios8
+if (version &gt;= 8) {
+    //1.创建消息上面要添加的动作(按钮的形式显示出来)
+    UIMutableUserNotificationAction *action = [[UIMutableUserNotificationAction alloc] init];
+    action.identifier = @"action";//按钮的标示
+    action.title=@"Accept";//按钮的标题
+    action.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
+    //    action.authenticationRequired = YES;
+    //    action.destructive = YES;
+
+    UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];
+    action2.identifier = @"action2";
+    action2.title=@"Reject";
+    action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
+    action.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+    action.destructive = YES;
+
+    //2.创建动作(按钮)的类别集合
+    UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
+    categorys.identifier = @"alert";//这组动作的唯一标示,推送通知的时候也是根据这个来区分
+    [categorys setActions:@[action,action2] forContext:(UIUserNotificationActionContextMinimal)];
+
+    //3.创建UIUserNotificationSettings，并设置消息的显示类类型
+    UIUserNotificationSettings *notiSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:[NSSet setWithObjects:categorys, nil]];
+    [application registerUserNotificationSettings:notiSettings];
+
+}else{
+    [application registerForRemoteNotificationTypes: UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound];
+}
+</code></pre>
+
+<p>2.
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    [application registerForRemoteNotifications];
+}</p>
+
+<p>3.deviceToken
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NSString *token=[NSString stringWithFormat:@"%@",deviceToken];
+    token=[token stringByReplacingOccurrencesOfString:@"&lt;" withString:@""];
+    token=[token stringByReplacingOccurrencesOfString:@"&gt;" withString:@""];
+    token=[token stringByReplacingOccurrencesOfString:@" " withString:@""];</p>
+
+<p>}</p>
+
+<p>4.注册失败
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+    NSLog(@"注册失败，无法获取设备ID, 具体错误: %@", error);
+}</p>
+
+<p>5.推送返回
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"userInfo == %@",userInfo);</p>
+
+<pre><code>NSString *message = [[userInfo objectForKey:@"aps"]objectForKey:@"alert"];
+
+UIAlertView *createUserResponseAlert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                                  message:message
+                                                                 delegate:self
+                                                        cancelButtonTitle:@"取消"
+                                                        otherButtonTitles: @"确认", nil];
+
+[createUserResponseAlert show];
+</code></pre>
+
+<p>}</p>
+
+<ul>
+<li>(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{</li>
+</ul>
+
+<p>}</p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "notification.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
