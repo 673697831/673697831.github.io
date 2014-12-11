@@ -1,0 +1,536 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+/*
+     rect(x,y,width,height);
+     width， height正负代表了从原点的绘制方向,矩形的长宽都是取得绝对值
+     */
+    
+    
+    // Do any additional setup after loading the view, typically from a nib.
+#pragma mark -------------------------------------------生成CGRect---------------------------------------
+    CGRect originalRect = CGRectMake(80.44, 30.66, 100.77, 95.88);
+    NSLog(@"originalRect = %@",NSStringFromCGRect(originalRect));
+
+    // CGRectInfinite 用法
+    /*
+     生成无穷大矩形
+     */
+    NSLog(@"infiniteRect = %@",NSStringFromCGRect(CGRectInfinite));
+    
+    // CGRectNull 用法
+    NSLog(@"nullRect = %@",NSStringFromCGRect(CGRectNull));
+    
+    //CGRectZero 用法
+    /*
+     CGRectMake(0, 0, 0, 0)
+     */
+    NSLog(@"zeroRect = %@",NSStringFromCGRect(CGRectZero));
+    
+    // CGRectInset 用法
+    CGRect insetRect = CGRectInset(originalRect, 1, 2);
+    /*
+     CGRectInset(originalRect, dx, dy);
+    insetRect.origin.x = originalRect.origin.x + dx ;
+    insetRect.origin.y = originalRect.origin.y + dy;
+    insetRect.size.width = originalRect.size.width - 2 * dx;
+    insetRect.size.height = originalRect.size.height - 2 * dy;
+     */
+    NSLog(@"insetRect = %@",NSStringFromCGRect(insetRect));
+    
+    //CGRectOffset 用法
+    CGRect offsetRect = CGRectOffset(originalRect, -1, -2);
+    /*
+     CGRectOffset(originalRect, dx, dy);
+     insetRect.origin.x = originalRect.origin.x + dx ;
+     insetRect.origin.y = originalRect.origin.y + dy;
+     insetRect.size.width = originalRect.size.width;
+     insetRect.size.height = originalRect.size.height;
+     */
+    NSLog(@"offsetRect = %@",NSStringFromCGRect(offsetRect));
+    
+    //CGRectIntegral 用法
+    /*
+     将origin值向下调整到最近整数，size向上调整到最近整数，使生成的CGRect可以完全包含原来的CGRect.
+     */
+    CGRect integralRect = CGRectIntegral(originalRect);
+    NSLog(@"integralRect = %@",NSStringFromCGRect(integralRect));
+    
+    //CGRectStandardize 用法
+    /*
+     CGRectStandardize(testRect)
+     standardizeRect.size.width = fabsf(testRect.size.width)//testRect.size.width 的绝对值
+     standardizeRect.size.height = fabsf(testRect.size.height)//testRect.size.height 的绝对值
+     */
+    CGRect testRect = CGRectMake(-5.5, -6.6, -7.7, -8.8);
+    CGRect standardizeRect = CGRectStandardize(testRect);
+    NSLog(@"standardizeRect = %@",NSStringFromCGRect(standardizeRect));
+    
+    //CGRectUnion 用法
+    /*
+     CGRectUnion(rect1,rect2) 返回值是能够包含两个矩形的最小矩形
+     unionResultRect.origin.x = min(rect1.origin.x, rect2.origin.x);
+     unionResultRect.origin.y = min(rect1.origin.y, rect2.origin.y);
+     unionResultRect.size.width = min(rect1.origin.y, rect2.origin.y);
+     unionResultRect.size.height = min(rect1.origin.y, rect2.origin.y);
+     */
+    CGRect unionRect1 = CGRectMake(100, 50, 60, 70);
+    CGRect unionRect2 = CGRectMake(180, 20, 30, 40);
+    CGRect unionRect3 = CGRectMake(120, 80, 80, 90);
+    CGRect unionResultRect1 = CGRectUnion(unionRect1, unionRect2);
+    CGRect unionResultRect2 = CGRectUnion(unionRect1, unionRect3);
+    NSLog(@"unionResultRect1 = %@, unionResultRect2 = %@",NSStringFromCGRect(unionResultRect1),NSStringFromCGRect(unionResultRect2));
+    
+    //CGRectIntersection 用法
+    /*
+     CGRectIntersection(rect1, rect2)
+     求两个矩形的交集，返回结果是两个矩形相交的区域，如果没有交集的话，返回值是NSNullRect
+     */
+    CGRect interRect1 = CGRectMake(100, 50, 60, 70);
+    CGRect interRect2 = CGRectMake(180, 20, 30, 40);
+    CGRect interRect3 = CGRectMake(120, 80, 80, 90);
+    CGRect intersectionRect1 = CGRectIntersection(interRect1, interRect2);
+    CGRect intersectionRect2 = CGRectIntersection(interRect1, interRect3);
+    NSLog(@"intersectionRect1 = %@, intersectionRect2 = %@",NSStringFromCGRect(intersectionRect1),NSStringFromCGRect(intersectionRect2));
+    
+#pragma mark ------------------------------------------获取x,y,width,height---------------------------------------------------
+    //CGRectGetMinX(originalRect),CGRectGetMidX(originalRect),CGRectGetMaxX(originalRect),CGRectGetMinY(originalRect),CGRectGetMidY(originalRect),CGRectGetMaxY(originalRect) , CGRectGetWidth(originalRect), CGRectGetHeight(originalRect)用法
+    /*
+     minX = originalRect.origin.x;
+     midX = (minX + maxX)/2;
+     maxX = (originalRect.origin.x + originalRect.size.width);
+     
+     minY = originalRect.origin.y;
+     midY = (minY + maxY)/2;
+     maxY = (originalRect.origin.y + originalRect.size.height);
+     
+     width = originalRect.size.width;
+     height = originalRect.size.height;
+     */
+    NSLog(@"minX = %f, midX = %f, maxX = %f, minY = %f, midY = %f, maxY = %f, width = %f, height = %f",CGRectGetMinX(originalRect),CGRectGetMidX(originalRect),CGRectGetMaxX(originalRect),CGRectGetMinY(originalRect),CGRectGetMidY(originalRect),CGRectGetMaxY(originalRect),CGRectGetWidth(originalRect), CGRectGetHeight(originalRect));
+    
+    //CGRectGetWidth(originalRect), CGRectGetHeight(originalRect),用法
+    /*
+     width = originalRect.size.width;
+     height = originalRect.size.height;
+     */
+    NSLog(@"width = %f, height = %f",CGRectGetWidth(originalRect), CGRectGetHeight(originalRect));
+#pragma mark -----------------------------------------NSString 与 CGRect 转换-----------------------------------------------
+    //NSString 与 CGRect 转换
+    NSString *originalRectStr = NSStringFromCGRect(originalRect);
+    CGRect rectFromStr = CGRectFromString(originalRectStr);
+    NSLog(@"originalRectStr = %@, rect = %@",originalRectStr,NSStringFromCGRect(rectFromStr));
+    
+#pragma mark -----------------------------------------CGRect 与 NSDictionary 转换---------------------------------------------
+    //.CGRect与NSDictionary转换
+    CFDictionaryRef frameDictRef = CGRectCreateDictionaryRepresentation(originalRect);
+    NSDictionary *frameDict = [NSDictionary dictionaryWithDictionary:(NSDictionary*)CFBridgingRelease(frameDictRef)]; // autoreleased
+    CGRect rectFromDic;
+    CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)frameDict, &rectFromDic);
+    NSLog(@"frameDict = %@, rectFromDic = %@",frameDict, NSStringFromCGRect(rectFromDic));
+    
+#pragma mark -----------------------------------------CGRect 与 NSValue 转换---------------------------------------------
+    //. CGRect与NSValue转换
+    /*
+     在NSArray,NSDictionary容器中只能存储Objetive-C对象，不能直接存储C结构体，所有需要存储矩形时，需要将其转换为NSValue值。
+     */
+    NSValue *originalRectValue = [NSValue valueWithCGRect:originalRect];
+    CGRect valueRect = [originalRectValue CGRectValue];
+    NSLog(@"originalRectValue = %@, valueRect = %@",originalRectValue, NSStringFromCGRect(valueRect));
+    
+#pragma mark -----------------------------------------判断---------------------------------------------
+    //CGRectEqualToRect
+    /*
+     CGRectEqualToRect(CGRect rect1, CGRect rect2)
+     rect1 与 rect2 的origin,size 完全相同 ，返回YES;否则，返回NO;
+     */
+    if (CGRectEqualToRect(unionRect1, unionRect2)) {
+        NSLog(@"相同");
+    } else {
+        NSLog(@"不相同");
+    }
+    
+    //CGRectIsEmpty(CGRect rect)
+    /*
+     rect的宽度和高度只要有一个就会被定为emptyRect
+     */
+    CGRect emptyRect = CGRectMake(0, 10, 0, 20);
+    if (CGRectIsEmpty(emptyRect)) {
+        NSLog(@"是 emptyRect");
+    } else {
+        NSLog(@"不是 emptyRect");
+    }
+    
+    //CGRectIsNull(CGRect rect)
+    /*
+     rect 是NSNullRect 返回true
+     */
+    if (CGRectIsNull(originalRect)) {
+        NSLog(@"是 NSNullRect ");
+    } else {
+         NSLog(@"不是 NSNullRect ");
+    }
+    
+    //CGRectIsInfinite(CGRect rect)
+    /*
+     判断是不是无穷大矩形
+     */
+    if (CGRectIsInfinite(originalRect)) {
+        NSLog(@"是 无穷大 ");
+    } else {
+        NSLog(@"不是 无穷大 ");
+    }
+    
+    //CGRectContainsPoint(CGRect rect, CGPoint point)
+    /*
+     判断rect 是不是包含 point 这个点
+     */
+    CGPoint position = CGPointMake(100, 100);
+    if (CGRectContainsPoint(originalRect, position)) {
+        NSLog(@" rect 包含 point");
+    } else {
+        NSLog(@" rect 不包含 point");
+    }
+    
+    //CGRectContainsRect(CGRect rect1, CGRect rect2)
+    /*
+     判断 rect2  是不是在 rect1 里面
+     */
+    if (CGRectContainsRect(unionRect1, unionRect2)) {
+        NSLog(@" rect1 包含 rect2");
+    } else {
+        NSLog(@" rect1 不包含 rect2");
+    }
+    
+    //CGRectIntersectsRect(CGRect rect1, CGRect rect2)
+    /*
+     判断 rect1 与 rect2 是不是有交集
+     */
+    if (CGRectIntersectsRect(unionRect1, unionRect2)) {
+        NSLog(@" rect1 与 rect2 有交集");
+    } else {
+        NSLog(@" rect1 与 rect2 没有交集");
+    }
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<p>/*
+     rect(x,y,width,height);
+     width， height正负代表了从原点的绘制方向,矩形的长宽都是取得绝对值
+     */</p>
+
+<pre><code>// Do any additional setup after loading the view, typically from a nib.
+</code></pre>
+
+<h1 id="pragmamarkcgrect">pragma mark -------------------------------------------生成CGRect---------------------------------------</h1>
+
+<pre><code>CGRect originalRect = CGRectMake(80.44, 30.66, 100.77, 95.88);
+NSLog(@"originalRect = %@",NSStringFromCGRect(originalRect));
+
+// CGRectInfinite 用法
+/*
+ 生成无穷大矩形
+ */
+NSLog(@"infiniteRect = %@",NSStringFromCGRect(CGRectInfinite));
+
+// CGRectNull 用法
+NSLog(@"nullRect = %@",NSStringFromCGRect(CGRectNull));
+
+//CGRectZero 用法
+/*
+ CGRectMake(0, 0, 0, 0)
+ */
+NSLog(@"zeroRect = %@",NSStringFromCGRect(CGRectZero));
+
+// CGRectInset 用法
+CGRect insetRect = CGRectInset(originalRect, 1, 2);
+/*
+ CGRectInset(originalRect, dx, dy);
+insetRect.origin.x = originalRect.origin.x + dx ;
+insetRect.origin.y = originalRect.origin.y + dy;
+insetRect.size.width = originalRect.size.width - 2 * dx;
+insetRect.size.height = originalRect.size.height - 2 * dy;
+ */
+NSLog(@"insetRect = %@",NSStringFromCGRect(insetRect));
+
+//CGRectOffset 用法
+CGRect offsetRect = CGRectOffset(originalRect, -1, -2);
+/*
+ CGRectOffset(originalRect, dx, dy);
+ insetRect.origin.x = originalRect.origin.x + dx ;
+ insetRect.origin.y = originalRect.origin.y + dy;
+ insetRect.size.width = originalRect.size.width;
+ insetRect.size.height = originalRect.size.height;
+ */
+NSLog(@"offsetRect = %@",NSStringFromCGRect(offsetRect));
+
+//CGRectIntegral 用法
+/*
+ 将origin值向下调整到最近整数，size向上调整到最近整数，使生成的CGRect可以完全包含原来的CGRect.
+ */
+CGRect integralRect = CGRectIntegral(originalRect);
+NSLog(@"integralRect = %@",NSStringFromCGRect(integralRect));
+
+//CGRectStandardize 用法
+/*
+ CGRectStandardize(testRect)
+ standardizeRect.size.width = fabsf(testRect.size.width)//testRect.size.width 的绝对值
+ standardizeRect.size.height = fabsf(testRect.size.height)//testRect.size.height 的绝对值
+ */
+CGRect testRect = CGRectMake(-5.5, -6.6, -7.7, -8.8);
+CGRect standardizeRect = CGRectStandardize(testRect);
+NSLog(@"standardizeRect = %@",NSStringFromCGRect(standardizeRect));
+
+//CGRectUnion 用法
+/*
+ CGRectUnion(rect1,rect2) 返回值是能够包含两个矩形的最小矩形
+ unionResultRect.origin.x = min(rect1.origin.x, rect2.origin.x);
+ unionResultRect.origin.y = min(rect1.origin.y, rect2.origin.y);
+ unionResultRect.size.width = min(rect1.origin.y, rect2.origin.y);
+ unionResultRect.size.height = min(rect1.origin.y, rect2.origin.y);
+ */
+CGRect unionRect1 = CGRectMake(100, 50, 60, 70);
+CGRect unionRect2 = CGRectMake(180, 20, 30, 40);
+CGRect unionRect3 = CGRectMake(120, 80, 80, 90);
+CGRect unionResultRect1 = CGRectUnion(unionRect1, unionRect2);
+CGRect unionResultRect2 = CGRectUnion(unionRect1, unionRect3);
+NSLog(@"unionResultRect1 = %@, unionResultRect2 = %@",NSStringFromCGRect(unionResultRect1),NSStringFromCGRect(unionResultRect2));
+
+//CGRectIntersection 用法
+/*
+ CGRectIntersection(rect1, rect2)
+ 求两个矩形的交集，返回结果是两个矩形相交的区域，如果没有交集的话，返回值是NSNullRect
+ */
+CGRect interRect1 = CGRectMake(100, 50, 60, 70);
+CGRect interRect2 = CGRectMake(180, 20, 30, 40);
+CGRect interRect3 = CGRectMake(120, 80, 80, 90);
+CGRect intersectionRect1 = CGRectIntersection(interRect1, interRect2);
+CGRect intersectionRect2 = CGRectIntersection(interRect1, interRect3);
+NSLog(@"intersectionRect1 = %@, intersectionRect2 = %@",NSStringFromCGRect(intersectionRect1),NSStringFromCGRect(intersectionRect2));
+</code></pre>
+
+<h1 id="pragmamarkxywidthheight">pragma mark ------------------------------------------获取x,y,width,height---------------------------------------------------</h1>
+
+<pre><code>//CGRectGetMinX(originalRect),CGRectGetMidX(originalRect),CGRectGetMaxX(originalRect),CGRectGetMinY(originalRect),CGRectGetMidY(originalRect),CGRectGetMaxY(originalRect) , CGRectGetWidth(originalRect), CGRectGetHeight(originalRect)用法
+/*
+ minX = originalRect.origin.x;
+ midX = (minX + maxX)/2;
+ maxX = (originalRect.origin.x + originalRect.size.width);
+
+ minY = originalRect.origin.y;
+ midY = (minY + maxY)/2;
+ maxY = (originalRect.origin.y + originalRect.size.height);
+
+ width = originalRect.size.width;
+ height = originalRect.size.height;
+ */
+NSLog(@"minX = %f, midX = %f, maxX = %f, minY = %f, midY = %f, maxY = %f, width = %f, height = %f",CGRectGetMinX(originalRect),CGRectGetMidX(originalRect),CGRectGetMaxX(originalRect),CGRectGetMinY(originalRect),CGRectGetMidY(originalRect),CGRectGetMaxY(originalRect),CGRectGetWidth(originalRect), CGRectGetHeight(originalRect));
+
+//CGRectGetWidth(originalRect), CGRectGetHeight(originalRect),用法
+/*
+ width = originalRect.size.width;
+ height = originalRect.size.height;
+ */
+NSLog(@"width = %f, height = %f",CGRectGetWidth(originalRect), CGRectGetHeight(originalRect));
+</code></pre>
+
+<h1 id="pragmamarknsstringcgrect">pragma mark -----------------------------------------NSString 与 CGRect 转换-----------------------------------------------</h1>
+
+<pre><code>//NSString 与 CGRect 转换
+NSString *originalRectStr = NSStringFromCGRect(originalRect);
+CGRect rectFromStr = CGRectFromString(originalRectStr);
+NSLog(@"originalRectStr = %@, rect = %@",originalRectStr,NSStringFromCGRect(rectFromStr));
+</code></pre>
+
+<h1 id="pragmamarkcgrectnsdictionary">pragma mark -----------------------------------------CGRect 与 NSDictionary 转换---------------------------------------------</h1>
+
+<pre><code>//.CGRect与NSDictionary转换
+CFDictionaryRef frameDictRef = CGRectCreateDictionaryRepresentation(originalRect);
+NSDictionary *frameDict = [NSDictionary dictionaryWithDictionary:(NSDictionary*)CFBridgingRelease(frameDictRef)]; // autoreleased
+CGRect rectFromDic;
+CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)frameDict, &amp;rectFromDic);
+NSLog(@"frameDict = %@, rectFromDic = %@",frameDict, NSStringFromCGRect(rectFromDic));
+</code></pre>
+
+<h1 id="pragmamarkcgrectnsvalue">pragma mark -----------------------------------------CGRect 与 NSValue 转换---------------------------------------------</h1>
+
+<pre><code>//. CGRect与NSValue转换
+/*
+ 在NSArray,NSDictionary容器中只能存储Objetive-C对象，不能直接存储C结构体，所有需要存储矩形时，需要将其转换为NSValue值。
+ */
+NSValue *originalRectValue = [NSValue valueWithCGRect:originalRect];
+CGRect valueRect = [originalRectValue CGRectValue];
+NSLog(@"originalRectValue = %@, valueRect = %@",originalRectValue, NSStringFromCGRect(valueRect));
+</code></pre>
+
+<h1 id="pragmamark">pragma mark -----------------------------------------判断---------------------------------------------</h1>
+
+<pre><code>//CGRectEqualToRect
+/*
+ CGRectEqualToRect(CGRect rect1, CGRect rect2)
+ rect1 与 rect2 的origin,size 完全相同 ，返回YES;否则，返回NO;
+ */
+if (CGRectEqualToRect(unionRect1, unionRect2)) {
+    NSLog(@"相同");
+} else {
+    NSLog(@"不相同");
+}
+
+//CGRectIsEmpty(CGRect rect)
+/*
+ rect的宽度和高度只要有一个就会被定为emptyRect
+ */
+CGRect emptyRect = CGRectMake(0, 10, 0, 20);
+if (CGRectIsEmpty(emptyRect)) {
+    NSLog(@"是 emptyRect");
+} else {
+    NSLog(@"不是 emptyRect");
+}
+
+//CGRectIsNull(CGRect rect)
+/*
+ rect 是NSNullRect 返回true
+ */
+if (CGRectIsNull(originalRect)) {
+    NSLog(@"是 NSNullRect ");
+} else {
+     NSLog(@"不是 NSNullRect ");
+}
+
+//CGRectIsInfinite(CGRect rect)
+/*
+ 判断是不是无穷大矩形
+ */
+if (CGRectIsInfinite(originalRect)) {
+    NSLog(@"是 无穷大 ");
+} else {
+    NSLog(@"不是 无穷大 ");
+}
+
+//CGRectContainsPoint(CGRect rect, CGPoint point)
+/*
+ 判断rect 是不是包含 point 这个点
+ */
+CGPoint position = CGPointMake(100, 100);
+if (CGRectContainsPoint(originalRect, position)) {
+    NSLog(@" rect 包含 point");
+} else {
+    NSLog(@" rect 不包含 point");
+}
+
+//CGRectContainsRect(CGRect rect1, CGRect rect2)
+/*
+ 判断 rect2  是不是在 rect1 里面
+ */
+if (CGRectContainsRect(unionRect1, unionRect2)) {
+    NSLog(@" rect1 包含 rect2");
+} else {
+    NSLog(@" rect1 不包含 rect2");
+}
+
+//CGRectIntersectsRect(CGRect rect1, CGRect rect2)
+/*
+ 判断 rect1 与 rect2 是不是有交集
+ */
+if (CGRectIntersectsRect(unionRect1, unionRect2)) {
+    NSLog(@" rect1 与 rect2 有交集");
+} else {
+    NSLog(@" rect1 与 rect2 没有交集");
+}
+</code></pre>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "cgrect.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
