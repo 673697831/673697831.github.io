@@ -117,6 +117,7 @@
     CGRect intersectionRect2 = CGRectIntersection(interRect1, interRect3);
     NSLog(@"intersectionRect1 = %@, intersectionRect2 = %@",NSStringFromCGRect(intersectionRect1),NSStringFromCGRect(intersectionRect2));
     
+   //CGPath -> CGPathGetBoundingBox 得到占用的区域大小
 #pragma mark ------------------------------------------获取x,y,width,height---------------------------------------------------
     //CGRectGetMinX(originalRect),CGRectGetMidX(originalRect),CGRectGetMaxX(originalRect),CGRectGetMinY(originalRect),CGRectGetMidY(originalRect),CGRectGetMaxY(originalRect) , CGRectGetWidth(originalRect), CGRectGetHeight(originalRect)用法
     /*
@@ -333,6 +334,8 @@ CGRect intersectionRect1 = CGRectIntersection(interRect1, interRect2);
 CGRect intersectionRect2 = CGRectIntersection(interRect1, interRect3);
 NSLog(@"intersectionRect1 = %@, intersectionRect2 = %@",NSStringFromCGRect(intersectionRect1),NSStringFromCGRect(intersectionRect2));
 </code></pre>
+
+<p>//CGPath -&gt; CGPathGetBoundingBox 得到占用的区域大小</p>
 
 <h1 id="pragmamarkxywidthheight">pragma mark ------------------------------------------获取x,y,width,height---------------------------------------------------</h1>
 
